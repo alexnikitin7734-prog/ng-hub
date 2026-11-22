@@ -1,10 +1,9 @@
-/* НГ-лендинг: карточки окном, калькулятор, подборка, даты «Атриума». Логика — как у кейтеринга. */
+/* НГ-лендинг: карточки окном, каталог, даты «Атриума». Логика — как у кейтеринга. */
 (function () {
   'use strict';
   var root = document.getElementById('ktg');
   var $ = function (s, box) { return (box || root).querySelector(s); };
   var $$ = function (s, box) { return [].slice.call((box || root).querySelectorAll(s)); };
-  var money = function (n) { return Math.round(n).toLocaleString('ru-RU') + ' ₽'; };
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -22,19 +21,9 @@
   DATA.forEach(function (group) { group.items.forEach(function (it) { if (!byId[it.id]) byId[it.id] = { it: it, group: group.name }; }); });
   KIT.forEach(function (it) { if (!byId[it.id]) byId[it.id] = { it: it, group: 'Готовый комплект' }; });
 
-  // еда и персонал — цены и нормы калькулятора кейтеринга (app.js keytering-hub)
-  var SHIFT = 7500;
-  var FOOD = {
-    furshet: { name: 'Фуршет', icon: 'ik-furshet', waiterPer: 20, levels: [[2900, '400 г · 200 мл'], [3800, '600 г · 300 мл'], [4900, '750 г · 500 мл']] },
-    banket: { name: 'Банкет', icon: 'ik-vip', waiterPer: 10, barmanPer: 50, levels: [[3200, '700 г · 400 мл'], [4500, '950 г · 600 мл'], [6000, '1200 г · 850 мл']] },
-    none: { name: 'Без еды', icon: 'ik-dekor' }
-  };
-  var LEVELS = ['Мини', 'Миди', 'Макси'];
-  var state = { food: 'furshet', level: 0, guests: 50, staff: true, picks: [], kit: '', used: false };
+  var picked = [];
   var cur = DATA[0], shown = 12, list = [], at = -1, found = [], query = '', sort = 'pop', typing;
   var grid = $('[data-grid]'), tabs = $('[data-tabs]'), modal = $('[data-qv]'), overlay = $('[data-overlay]');
-
-  function cost(it) { return it.pp ? it.v * state.guests : it.v; }
 
   /* ---------- комплекты с карточек сайта (№553) ---------- */
   var SITE = 'https://arenda-attrakcionov.ru';
@@ -132,11 +121,11 @@
 
   function syncPicks() {
     $$('[data-pick]', grid).forEach(function (b) {
-      var on = state.picks.indexOf(+b.dataset.pick) !== -1;
+      var on = picked.indexOf(+b.dataset.pick) !== -1;
       b.classList.toggle('is-on', on);
       b.textContent = on ? 'В подборке' : 'В подборку';
     });
-    if (modal.dataset.id) $('[data-qv-pick]').textContent = state.picks.indexOf(+modal.dataset.id) !== -1 ? 'Убрать из подборки' : 'Добавить в подборку';
+    if (modal.dataset.id) $('[data-qv-pick]').textContent = picked.indexOf(+modal.dataset.id) !== -1 ? 'Убрать из подборки' : 'Добавить в подборку';
   }
 
   function go(slug, scroll) {
@@ -199,102 +188,10 @@
     if (at !== -1 && list[at + n] !== undefined) view(list[at + n]);
   }
 
-  /* ---------- калькулятор ---------- */
-  function renderCalc() {
-    var f = FOOD[state.food], g = state.guests, rows = [], total = 0;
-    var seg = $('[data-food-seg]'), tiers = $('[data-tiers]');
-    seg.textContent = '';
-    Object.keys(FOOD).forEach(function (key) {
-      var b = el('button', key === state.food ? 'is-on' : ''), img = el('img');
-      b.type = 'button';
-      b.dataset.food = key;
-      img.src = 'img/ikonki/' + FOOD[key].icon + '.webp';
-      img.alt = '';
-      b.append(img, FOOD[key].name);
-      seg.appendChild(b);
-    });
-
-    tiers.textContent = '';
-    $('[data-food-step]').hidden = !f.levels;
-    $('[data-staff]').hidden = !f.levels;
-    if (f.levels) {
-      f.levels.forEach(function (lv, n) {
-        var b = el('button', 'ktg-tier' + (n === state.level ? ' is-on' : '')), price = el('div', 'ktg-tier__price', money(lv[0]) + ' ');
-        b.type = 'button';
-        b.dataset.level = n;
-        price.appendChild(el('small', '', '/ гость'));
-        b.append(el('b', '', LEVELS[n]), price, el('div', 'ktg-tier__out', lv[1] + ' на гостя'));
-        tiers.appendChild(b);
-      });
-      var food = f.levels[state.level][0] * g;
-      rows.push([f.name + ' «' + LEVELS[state.level] + '», ' + g + ' ' + plural(g, 'гость', 'гостя', 'гостей'), money(food)]);
-      total += food;
-      if (state.staff) {
-        var w = Math.ceil(g / f.waiterPer);
-        rows.push(['Официанты: ' + w + ' × смена 6 ч', money(w * SHIFT)]);
-        total += w * SHIFT;
-        if (f.barmanPer) {
-          var b = Math.ceil(g / f.barmanPer);
-          rows.push(['Бармены: ' + b + ' × смена 6 ч', money(b * SHIFT)]);
-          total += b * SHIFT;
-        }
-      }
-    }
-    $('[data-staff]').classList.toggle('is-on', state.staff);
-    state.picks.forEach(function (id) {
-      var it = byId[id].it;
-      rows.push([it.n, money(cost(it)), id]);
-      total += cost(it);
-    });
-
-    var box = $('[data-sum-rows]');
-    box.textContent = '';
-    rows.forEach(function (r) {
-      var row = el('div', 'ktg-sum__row'), name = el('span', '', r[0]);
-      if (r[2]) {
-        var x = el('button', 'ng-unpick', '×');
-        x.type = 'button';
-        x.dataset.pick = r[2];
-        x.setAttribute('aria-label', 'Убрать');
-        name.appendChild(x);
-      }
-      row.append(name, el('b', '', r[1]));
-      box.appendChild(row);
-    });
-    $('[data-sum-total]').textContent = money(total);
-    $('[data-sum-pp]').textContent = '≈ ' + money(total / g) + ' на гостя';
-
-    var n = state.picks.length, parts = [];
-    $('[data-cart-n]').textContent = n;
-    $('[data-cart-sum]').textContent = n ? 'от ' + money(total) : '';
-    $('[data-cart]').classList.toggle('is-shown', n > 0);
-    if (state.kit) parts.push('Комплект «' + state.kit + '»');
-    if (n || state.used) parts.push('Расчёт: ' + rows.map(function (r) { return r[0]; }).join(', ') + ' — от ' + money(total));
-    $('[data-chosen]').textContent = parts.join('. ');
-    $('[data-chosen]').hidden = !parts.length;
-    syncPicks();
-  }
-
-  function setGuests(value) {
-    var v = parseInt(String(value).replace(/\D/g, ''), 10) || 30, range = $('[data-guests-range]');
-    state.guests = Math.min(1000, Math.max(30, v));
-    $('[data-guests]').value = state.guests;
-    range.value = Math.min(500, state.guests);
-    range.style.setProperty('--p', (range.value - range.min) / (range.max - range.min) * 100 + '%');
-    renderCalc();
-  }
-
-  function toggle(id) {
-    var i = state.picks.indexOf(id);
-    if (i === -1) state.picks.push(id); else state.picks.splice(i, 1);
-    renderCalc();
-  }
-
   /* ---------- события ---------- */
   root.addEventListener('click', function (e) {
     var t = e.target.closest('button,a,[data-view],[data-photo]');
     if (!t) return;
-    if (t.matches('[data-food],[data-level],[data-g],[data-staff]')) state.used = true;
     if (t.matches('[data-view]')) {
       e.preventDefault();
       var scope = t.closest('.ng-kit');
@@ -307,13 +204,7 @@
       $$('[data-photo]', modal).forEach(function (x) { x.classList.toggle('is-on', x === t); });
     } else if (t.matches('[data-qv-prev]')) step(-1);
     else if (t.matches('[data-qv-next]')) step(1);
-    else if (t.matches('[data-qv-pick]')) toggle(+modal.dataset.id);
     else if (t.matches('[data-close]')) close();
-    else if (t.matches('[data-pick]')) toggle(+t.dataset.pick);
-    else if (t.matches('[data-food]')) { state.food = t.dataset.food; renderCalc(); }
-    else if (t.matches('[data-level]')) { state.level = +t.dataset.level; renderCalc(); }
-    else if (t.matches('[data-g]')) setGuests(state.guests + +t.dataset.g);
-    else if (t.matches('[data-staff]')) { state.staff = !state.staff; renderCalc(); }
     else if (t.matches('[data-group]')) go(t.dataset.group, !tabs.contains(t));
     else if (t.matches('[data-more]')) { shown += 12; renderGrid(); }
     else if (t.matches('[data-dd-btn]')) $('[data-dd]').classList.toggle('is-open');
@@ -325,15 +216,7 @@
       $('[data-dd]').classList.remove('is-open');
       renderGrid();
     }
-    else if (t.matches('[data-preset]')) {
-      state.food = t.dataset.preset;
-      state.used = true;
-      go(t.dataset.tab);
-      renderCalc();
-      document.getElementById('calc').scrollIntoView();
-    } else if (t.matches('[data-kit]')) { state.kit = t.dataset.kit; renderCalc(); }
-    else if (t.matches('[data-cart]')) document.getElementById('calc').scrollIntoView();
-    else if (t.matches('[data-send]')) { state.used = true; renderCalc(); document.getElementById('zayavka').scrollIntoView(); }
+    else if (t.matches('[data-cart]')) document.getElementById('konstruktor').scrollIntoView();
     else if (t.matches('[data-sl-go]')) {
       var track = $('[data-sl]', t.parentNode);
       track.scrollBy({ left: +t.dataset.slGo * track.clientWidth, behavior: 'smooth' });
@@ -355,8 +238,7 @@
     if (e.key === 'ArrowRight') step(1);
   });
   document.addEventListener('ktg:go', function (e) { close(); go(e.detail, true); });
-  $('[data-guests]').addEventListener('change', function () { state.used = true; setGuests(this.value); });
-  $('[data-guests-range]').addEventListener('input', function () { state.used = true; setGuests(this.value); });
+  document.addEventListener('ng:picks', function (e) { picked = e.detail; syncPicks(); });
   $$('[data-sl]').forEach(function (track) {
     track.addEventListener('scroll', function () {
       var k = Math.round(track.scrollLeft / track.clientWidth);
@@ -416,5 +298,4 @@
   });
 
   renderGrid();
-  setGuests(50);
 })();

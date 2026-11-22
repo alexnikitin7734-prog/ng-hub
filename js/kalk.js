@@ -1,4 +1,4 @@
-/* Черновик конструктора праздника (№551). */
+/* Конструктор праздника (№551, №562): он же хранит подборку из каталога. */
 (function () {
   'use strict';
   var root = document.getElementById('ktg');
@@ -18,7 +18,7 @@
   };
 
   var MODEL = window.NG_KZ, HOURS = 4, MIN_PORTIONS = 30;
-  var byCode = {}, byId = {}, catalog = {}, on = {}, extra = [], guests = 50, preset, fresh = '';
+  var byCode = {}, byId = {}, catalog = {}, on = {}, extra = [], guests = 50, preset, fresh = '', kit = '', used = false, fromCatalog = false;
 
   window.KTG_DATA.forEach(function (g) { g.items.forEach(function (it) { catalog[it.id] = it; }); });
 
@@ -117,6 +117,18 @@
     $('[data-kz-per]').textContent = '≈ ' + money(total / guests);
     $$('[data-kz-preset]').forEach(function (b) { b.classList.toggle('is-on', b.dataset.kzPreset === preset.code); });
     fresh = '';
+
+    var names = [], ids = extra.slice();
+    Object.keys(on).forEach(function (c) { if (on[c] && byCode[c].id) ids.push(byCode[c].id); });
+    document.dispatchEvent(new CustomEvent('ng:picks', { detail: ids }));
+    var count = rows.children.length;
+    $('[data-cart-n]').textContent = count;
+    $('[data-cart-sum]').textContent = 'от ' + money(total);
+    $('[data-cart]').classList.toggle('is-shown', fromCatalog && count > 0);
+    if (kit) names.push('Комплект «' + kit + '»');
+    if (used) names.push(preset.name + ', ' + guests + ' гостей: ' + $$('[data-kz-rows] li>span').map(function (x) { return x.firstChild.textContent; }).join(', ') + ' — от ' + money(total));
+    $('[data-chosen]').textContent = names.join('. ');
+    $('[data-chosen]').hidden = !names.length;
   }
 
   // ссылка: праздник-гости-позиции-добавки из каталога; позиции по номеру карточки, официанты — s
@@ -136,16 +148,12 @@
       var it = id === 's' ? byCode.oficianty : byId[id];
       if (it) on[it.code] = true;
     });
-    setGuests(m[2]);
+    extra = [];
     m[4].split('.').forEach(function (id) {
-      if (!catalog[id] || extra.indexOf(+id) !== -1) return;
-      // через кнопку, чтобы каталог тоже отметил позицию
-      var b = button('');
-      b.dataset.pick = id;
-      root.appendChild(b);
-      b.click();
-      b.remove();
+      if (catalog[id] && extra.indexOf(+id) === -1) extra.push(+id);
     });
+    used = true;
+    setGuests(m[2]);
     setTimeout(function () { document.getElementById('konstruktor').scrollIntoView(); }, 300);
     return true;
   }
@@ -176,8 +184,13 @@
 
   // на захвате: shop.js успевает пересобрать строку до всплытия
   root.addEventListener('click', function (e) {
-    var t = e.target.closest('button');
+    var t = e.target.closest('button,a');
     if (!t) return;
+    if (t.matches('[data-kit]')) {
+      kit = t.dataset.kit;
+      return render();
+    }
+    if (t.matches('[data-kz-preset],[data-kz-switch],[data-kz-step],[data-pick],[data-qv-pick]')) used = true;
     if (t.matches('[data-kz-preset]')) choose(t.dataset.kzPreset);
     else if (t.matches('[data-kz-open]')) {
       t.setAttribute('aria-expanded', t.closest('.kz-group').classList.toggle('is-open'));
@@ -193,20 +206,19 @@
     else if (t.matches('[data-kz-switch]')) flip(t.dataset.kzSwitch);
     else if (t.matches('[data-kz-step]')) setGuests(guests + +t.dataset.kzStep);
     else if (t.matches('[data-pick],[data-qv-pick]')) {
+      if (!t.closest('[data-kz-rows]')) fromCatalog = true;
       var id = +(t.dataset.pick || root.querySelector('[data-qv]').dataset.id);
       if (byId[id]) return flip(byId[id].code);
       var at = extra.indexOf(id);
       if (at === -1) { extra.push(id); fresh = 'id' + id; } else extra.splice(at, 1);
       render();
     } else if (t.matches('[data-kz-send]')) {
-      var names = $$('[data-kz-rows] li>span').map(function (s) { return s.firstChild.textContent; });
-      var chosen = $('[data-chosen]');
-      chosen.textContent = preset.name + ', ' + guests + ' гостей: ' + names.join(', ') + ' — ' + $('[data-kz-total]').textContent;
-      chosen.hidden = false;
+      used = true;
+      render();
       document.getElementById('zayavka').scrollIntoView();
     }
   }, true);
-  $('[data-kz-guests]').addEventListener('change', function () { setGuests(this.value); });
+  $('[data-kz-guests]').addEventListener('change', function () { used = true; setGuests(this.value); });
 
   if (!restore()) choose(MODEL.presets[0].code);
   addEventListener('hashchange', restore);

@@ -131,11 +131,7 @@
 /* всё в одном окне */
 .ng-menu{margin-top:24px}
 .ng-menu .ng-card{background:var(--ktg-page)}
-.ng-adds,.ktg-seg.ng-seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.ng-adds .ktg-add,.ng-seg>button{display:flex;flex-direction:column;align-items:center;gap:6px;height:auto;min-width:0;padding:8px 8px 10px;border-radius:16px;text-align:center;white-space:normal;line-height:18px}
-.ng-adds .ktg-add img,.ng-seg>button img{flex:none;width:auto;max-width:100%;height:112px;margin:0;border-radius:10px;object-fit:contain;background:none}
 .ng-menu .ktg-group{flex-basis:112px;min-width:0}
-.ng-staff{margin-top:16px}
 .ng-card{min-width:0;display:flex;flex-direction:column;background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
 .ng-card__view{display:block;width:100%;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
 .ng-card img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
@@ -162,9 +158,6 @@ button.ng-opt{cursor:pointer}
 
 .ng-check li button{padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .ng-check li button:hover{color:var(--ktg-accent)}
-.ng-unpick{margin-left:6px;padding:0 4px;border:0;background:none;color:inherit;opacity:.6;font:inherit;cursor:pointer}
-.ktg-sum__row>span{min-width:0;overflow-wrap:anywhere}
-.ktg-sum__row>b{white-space:nowrap}
 .ng-preview,.ng-chosen{margin-top:10px;font-weight:500}
 
 @media (hover:none){
@@ -188,9 +181,6 @@ button.ng-opt{cursor:pointer}
   .ng-gal__row--1{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ng-gal__row--2{grid-template-columns:minmax(0,.8fr) minmax(0,.5625fr)}
   .ng-mf--full{grid-column:1/-1}
-  .ng-adds,.ktg-seg.ng-seg{gap:8px}
-  .ng-adds .ktg-add,.ng-seg>button{padding:6px 4px 8px;font-size:13px;line-height:16px}
-  .ng-adds .ktg-add img,.ng-seg>button img{height:80px}
 }
 @media (prefers-reduced-motion:reduce){
   .ng-hint__wheel path{animation:none}
