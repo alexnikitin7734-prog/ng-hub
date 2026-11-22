@@ -111,6 +111,7 @@
     var whole = box.top >= top - 4 && box.bottom <= innerHeight + 4;
     if (!whole || (e.deltaY < 0 && target <= 0)) return;
     e.preventDefault();
+    settledAt = 0; // ёлку уже крутят
     var px = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? innerHeight : 1);
     target = Math.min(1, Math.max(0, target + Math.max(-240, Math.min(240, px)) / WHEEL));
     if (target >= 1) freeAt = now + PAUSE;
@@ -236,6 +237,43 @@
     });
     run();
   });
+
+  /* ---------- QR в чеках (№556) ---------- */
+  function share(box, hash) {
+    var url = location.origin + location.pathname + '#' + hash;
+    box.dataset.link = url;
+    box.textContent = '';
+    if (window.qrcode) {
+      var qr = window.qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      var pic = document.createElement('div');
+      pic.className = 'ng-share__qr';
+      pic.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+      box.appendChild(pic);
+    }
+    var side = document.createElement('div'), title = document.createElement('b'), copy = document.createElement('button');
+    title.textContent = 'Обсудить с коллегами';
+    copy.type = 'button';
+    copy.textContent = 'Скопировать ссылку';
+    copy.addEventListener('click', function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(box.dataset.link).then(function () { copy.textContent = 'Ссылка скопирована'; });
+    });
+    side.append(title, copy);
+    box.appendChild(side);
+  }
+  window.NG_SHARE = share;
+  $$('[data-share]').forEach(function (box) { share(box, box.dataset.share); });
+
+  function openCheck() {
+    var m = location.hash.match(/^#chek-([1-3])$/);
+    if (!m) return;
+    var kit = document.getElementById('k' + m[1]);
+    kit.querySelector('.ng-check').open = true;
+    setTimeout(function () { kit.scrollIntoView(); }, 300);
+  }
+  openCheck();
+  addEventListener('hashchange', openCheck);
 
   gifts.forEach(function (el) {
     el.addEventListener('click', function () {

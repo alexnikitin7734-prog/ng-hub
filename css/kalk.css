@@ -9,7 +9,7 @@
 .kz{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:var(--ktg-gap);align-items:start}
 .kz-main{padding:24px;border-radius:var(--ktg-r-lg);background:var(--ktg-card)}
 .kz-guests{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;color:var(--ktg-ink)}
-.kz-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.kz-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px}
 .kz-group{min-width:0;padding:10px 12px 6px;border-radius:16px;background:var(--ktg-page)}
 .kz-group__head{display:flex;align-items:center;gap:10px;padding-bottom:6px;color:var(--ktg-ink)}
 .kz-group__head img{flex:none;width:48px;height:48px;border-radius:10px;object-fit:cover}
@@ -32,13 +32,25 @@
 .kz-row.is-on .kz-row__price{color:var(--ktg-ink)}
 
 .kz-side{position:sticky;top:calc(var(--ng-top) + 12px)}
-.kz-receipt.ng-receipt{margin:0 0 10px;max-height:calc(100vh - var(--ng-top) - 100px);overflow-y:auto;scrollbar-width:thin}
+.kz-receipt.ng-receipt{margin:0 0 10px;max-height:calc(100vh - var(--ng-top) - 84px);overflow-y:auto;scrollbar-width:thin}
 .kz-receipt li{padding:3px 0}
 .kz-receipt li.is-new{animation:kzPrint .7s ease-out}
 .kz-off{margin-left:6px;padding:0 4px;border:0;background:none;color:#6b675e;font:inherit;cursor:pointer}
 @keyframes kzPrint{from{opacity:0;transform:translateY(-6px);background:#f0d99a}}
 
 .kz-mini{display:none}
+
+/* №556: видно выбранное, группа и всё целиком раскрываются */
+.kz-group{padding:8px 12px}
+.kz-group__head{padding:0 0 6px}
+.kz-group.is-empty:not(.is-open) .kz-group__head{padding:0}
+.kz-open{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0;border:0;background:none;color:inherit;text-align:left;cursor:pointer}
+.kz-open em{flex:none;display:flex;align-items:center;gap:6px;color:var(--ktg-text-2);font:normal 12px/16px var(--ktg-font)}
+.kz-open em::after{content:"";width:6px;height:6px;margin-top:-3px;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:rotate(45deg)}
+.kz-group.is-empty .kz-open em{color:var(--ktg-accent)}
+.kz-group.is-open .kz-open em::after{margin-top:3px;transform:rotate(225deg)}
+.kz-group:not(.is-open) .kz-row:not(.is-on),.kz-group:not(.is-open) .kz-more{display:none}
+.kz-full{display:block;margin:14px auto 0;padding:6px 10px;border:0;background:none;color:var(--ktg-accent);font:500 15px/20px var(--ktg-font);cursor:pointer}
 
 @media (max-width:1199px){
   .kz{grid-template-columns:minmax(0,1fr) 320px}

@@ -46,11 +46,14 @@
   });
 
   MODEL.groups.forEach(function (g) {
-    var box = el('div', 'kz-group'), head = el('div', 'kz-group__head'), img = el('img'), more = button('kz-more', 'ещё');
+    var box = el('div', 'kz-group'), head = el('div', 'kz-group__head'), img = el('img'), more = button('kz-more', 'в каталог'), open = button('kz-open');
     img.src = 'img/ikonki/ik-' + g.icon + '.webp';
     img.alt = '';
     more.dataset.group = g.slug; // каталог открывает shop.js
-    head.append(img, el('b', '', g.name), more);
+    open.dataset.kzOpen = g.slug;
+    open.setAttribute('aria-expanded', 'false');
+    open.append(img, el('b', '', g.name), el('em'));
+    head.append(open, more);
     box.appendChild(head);
     g.items.forEach(function (it) {
       var row = el('div', 'kz-row'), sw = button('kz-switch'), name = el('div', 'kz-row__name');
@@ -101,6 +104,12 @@
       line('id' + id, it.n, it.pp ? it.v * guests : it.v, it.pp ? money(it.v) + ' × ' + guests : '', off);
     });
 
+    $$('.kz-group').forEach(function (box) {
+      var picked = box.querySelectorAll('.kz-row.is-on').length;
+      box.classList.toggle('is-empty', !picked);
+      box.querySelector('em').textContent = picked ? picked + ' из ' + box.querySelectorAll('.kz-row').length : 'выбрать';
+    });
+    share();
     $('[data-kz-title]').textContent = preset.name.toUpperCase() + ' · ' + guests + ' ГОСТЕЙ';
     $('[data-kz-total]').textContent = 'от ' + money(total);
     $('[data-kz-total]').dataset.value = total;
@@ -108,6 +117,37 @@
     $('[data-kz-per]').textContent = '≈ ' + money(total / guests);
     $$('[data-kz-preset]').forEach(function (b) { b.classList.toggle('is-on', b.dataset.kzPreset === preset.code); });
     fresh = '';
+  }
+
+  // ссылка: праздник-гости-позиции-добавки из каталога; позиции по номеру карточки, официанты — s
+  function share() {
+    var ids = Object.keys(on).filter(function (c) { return on[c]; }).map(function (c) { return byCode[c].id || 's'; });
+    var hash = 'nabor=' + [preset.code, guests, ids.join('.'), extra.join('.')].join('-');
+    if (window.NG_SHARE) window.NG_SHARE($('[data-kz-share]'), hash);
+  }
+
+  function restore() {
+    var m = location.hash.match(/^#nabor=([a-z]+)-(\d+)-([\ds.]*)-([\d.]*)$/);
+    var found = m && MODEL.presets.filter(function (p) { return p.code === m[1]; })[0];
+    if (!found) return false;
+    preset = found;
+    on = {};
+    m[3].split('.').forEach(function (id) {
+      var it = id === 's' ? byCode.oficianty : byId[id];
+      if (it) on[it.code] = true;
+    });
+    setGuests(m[2]);
+    m[4].split('.').forEach(function (id) {
+      if (!catalog[id] || extra.indexOf(+id) !== -1) return;
+      // через кнопку, чтобы каталог тоже отметил позицию
+      var b = button('');
+      b.dataset.pick = id;
+      root.appendChild(b);
+      b.click();
+      b.remove();
+    });
+    setTimeout(function () { document.getElementById('konstruktor').scrollIntoView(); }, 300);
+    return true;
   }
 
   function choose(code) {
@@ -139,6 +179,17 @@
     var t = e.target.closest('button');
     if (!t) return;
     if (t.matches('[data-kz-preset]')) choose(t.dataset.kzPreset);
+    else if (t.matches('[data-kz-open]')) {
+      t.setAttribute('aria-expanded', t.closest('.kz-group').classList.toggle('is-open'));
+    } else if (t.matches('[data-kz-full]')) {
+      var full = !t.classList.contains('is-on');
+      t.classList.toggle('is-on', full);
+      t.textContent = full ? 'Только выбранное' : 'Полный вид';
+      $$('.kz-group').forEach(function (g) {
+        g.classList.toggle('is-open', full);
+        g.querySelector('.kz-open').setAttribute('aria-expanded', full);
+      });
+    }
     else if (t.matches('[data-kz-switch]')) flip(t.dataset.kzSwitch);
     else if (t.matches('[data-kz-step]')) setGuests(guests + +t.dataset.kzStep);
     else if (t.matches('[data-pick],[data-qv-pick]')) {
@@ -157,5 +208,6 @@
   }, true);
   $('[data-kz-guests]').addEventListener('change', function () { setGuests(this.value); });
 
-  choose(MODEL.presets[0].code);
+  if (!restore()) choose(MODEL.presets[0].code);
+  addEventListener('hashchange', restore);
 })();
