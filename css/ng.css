@@ -24,16 +24,18 @@
 
 .ng-gift{position:absolute;translate:-50% 0;opacity:0;pointer-events:none;text-decoration:none}
 .is-open .ng-gift{pointer-events:auto}
-.ng-gift--1{left:38.5%;bottom:14.5%;width:9%;aspect-ratio:758/752}
-.ng-gift--2{left:50%;bottom:13.5%;width:10%;aspect-ratio:964/979}
-.ng-gift--3{left:61.5%;bottom:14.5%;width:9%;aspect-ratio:778/739}
+.ng-gift--1{left:38.5%;bottom:9.5%;width:9%;aspect-ratio:758/752}
+.ng-gift--2{left:50%;bottom:8%;width:10%;aspect-ratio:964/979}
+.ng-gift--3{left:61.5%;bottom:9.5%;width:9%;aspect-ratio:778/739}
+.ng-gift::before{content:"";position:absolute;left:-4%;right:-4%;bottom:-5%;height:16%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.8),transparent)}
 .ng-gift>img{position:absolute;inset:0;width:100%;height:100%}
 .ng-gift>i{position:absolute;left:50%;top:30%;width:130%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;opacity:var(--open,0);mix-blend-mode:screen;
   background:radial-gradient(circle,rgba(255,240,200,.9),rgba(255,200,110,.3) 30%,transparent 62%)}
 .ng-gift__lid{transform-origin:50% 40%}
-.ng-gift>span{position:absolute;left:50%;top:102%;translate:-50% 0;width:124%;text-align:center;text-wrap:balance;font:600 clamp(10px,calc(max(100cqw,177.78cqh)*.0158),14px)/1.15 var(--ktg-font);color:var(--ng-gold);opacity:var(--open,0);text-shadow:0 1px 8px #000}
-.ng-gift--2>span{width:112%}
-
+.ng-gift>span{position:absolute;left:50%;bottom:109%;translate:-50% 0;width:max-content;max-width:124%;padding:5px 9px;border:1px solid rgba(240,217,154,.45);border-radius:10px;background:rgba(7,11,9,.78);
+  text-align:center;text-wrap:balance;font:600 clamp(9px,calc(max(100cqw,177.78cqh)*.0148),13px)/1.15 var(--ktg-font);color:var(--ng-gold);opacity:var(--open,0)}
+.ng-gift--1>span{left:auto;right:-4%;translate:none;max-width:168%}
+.ng-gift--3>span{left:-4%;translate:none;max-width:168%}
 .ng-hint{position:absolute;left:16px;top:16px;max-width:calc(50% - 44px);display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:99px;background:rgba(7,11,9,.72);color:var(--ng-gold);font-size:15px;line-height:20px;pointer-events:none}
 .ng-hint__wheel path{animation:ngWheel 1.4s ease-in-out infinite}
 .ng-hint__b,.is-open .ng-hint__a,.is-open .ng-hint__wheel,.ng-hint__touch{display:none}
@@ -69,6 +71,10 @@
 .ng-list button:hover{color:var(--ktg-accent)}
 .ng-check summary{display:flex;align-items:center;gap:8px;padding:8px 0;list-style:none;cursor:pointer;color:var(--ktg-accent);font-weight:500}
 .ng-check summary::-webkit-details-marker{display:none}
+.ng-kit:has(.ng-check[open]) .ng-list{display:none}
+.ng-check[open]{flex:1;margin-top:10px}
+.ng-check__less,.ng-check[open] .ng-check__more{display:none}
+.ng-check[open] .ng-check__less{display:inline}
 .ng-receipt{margin:10px 0 8px;padding:22px 16px 28px;background:#f7f3e9;color:#1d1c19;font:13px/1.4 "PT Mono",ui-monospace,monospace;
   -webkit-mask:conic-gradient(from 135deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 8px repeat-x,linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat;
   mask:conic-gradient(from 135deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 8px repeat-x,linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat}
@@ -107,6 +113,15 @@
 .ng-sl__dots{position:absolute;left:0;right:0;bottom:12px;z-index:1;display:flex;justify-content:center;gap:6px}
 .ng-sl__dots i{width:6px;height:6px;border-radius:3px;background:rgba(246,226,168,.45);transition:width .3s}
 .ng-sl__dots i.is-on{width:18px;background:var(--ng-gold)}
+
+/* кейсы: подписи под фото (№545) */
+.ng-root .ktg-case{display:flex;flex-direction:column;aspect-ratio:auto;background:var(--ktg-card)}
+.ng-root .ktg-case::after{display:none}
+.ng-root .ktg-case img{position:static;width:100%;height:auto;aspect-ratio:4/3}
+.ng-root .ktg-case:hover img{transform:none}
+.ng-root .ktg-case__text{position:static;padding:16px 20px 20px;color:var(--ktg-ink)}
+.ng-root .ktg-case__text b{font-size:17px;line-height:23px;font-weight:600}
+.ng-root .ktg-case:hover .ktg-case__text{color:var(--ktg-accent)}
 
 /* всё в одном окне */
 .ng-menu{margin-top:24px}

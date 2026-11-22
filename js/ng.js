@@ -13,31 +13,72 @@
   var hero = $('[data-hero]'), tree = $('[data-tree]'), frame = $('[data-frame]');
   var cv = $('[data-fx]'), ctx = cv.getContext('2d'), gifts = $$('.ng-gift');
   var header = document.getElementById('hdr26');
-  var TOP = .155, BOT = .8, top = 0, W = 0, H = 0, prevD = 0, bulbs = [], gold = [], seen = true;
+  var TOP = .155, BOT = .8, CX = .499, top = 0, W = 0, H = 0, prevD = 0, bulbs = [], parts = [], seen = true;
 
-  var glow = document.createElement('canvas');
-  glow.width = glow.height = 64;
-  var g = glow.getContext('2d'), grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-  grad.addColorStop(0, '#fffbe8');
-  grad.addColorStop(.12, 'rgba(255,214,140,1)');
-  grad.addColorStop(.32, 'rgba(255,170,70,.28)');
-  grad.addColorStop(1, 'rgba(255,170,60,0)');
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 64, 64);
+  // огни и блёстки — как на ng-vip (№543)
+  function sprite(core, halo) {
+    var c = document.createElement('canvas');
+    c.width = c.height = 128;
+    var g = c.getContext('2d'), r = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    r.addColorStop(0, '#fffcee');
+    r.addColorStop(.09, core);
+    r.addColorStop(.28, halo);
+    r.addColorStop(1, 'rgba(255,170,60,0)');
+    g.fillStyle = r;
+    g.fillRect(0, 0, 128, 128);
+    return c;
+  }
+  var GLOW = [sprite('rgba(255,214,140,1)', 'rgba(255,170,70,.28)'), sprite('rgba(255,190,100,1)', 'rgba(255,140,40,.3)'), sprite('rgba(255,236,190,1)', 'rgba(255,200,120,.24)')];
+  var FOIL = ['#f6e2a8', '#e9c97a', '#d6b46a', '#fff1c8', '#b8913f'];
 
   function halfWidth(s) { return .02 + .118 * Math.pow(s, .95); }
+  var seed = 7, rnd = function () { seed = seed * 16807 % 2147483647; return seed / 2147483647; };
   for (var strand = 0; strand < 2; strand++) {
     for (var i = 0; i < 120; i++) {
       var s = i / 119, a = s * 14 * Math.PI + strand * Math.PI, depth = Math.cos(a);
-      if (depth > -.3) bulbs.push({ s: s, x: .499 + halfWidth(s) * .93 * Math.sin(a), y: TOP + s * (BOT - TOP), depth: depth, phase: i * 1.7 });
+      if (depth < -.3) continue;
+      bulbs.push({
+        s: s, depth: depth, chase: (i + strand) % 4, phase: rnd() * 6.28, speed: 5 + rnd() * 6, pop: 0,
+        tint: rnd() < .18 ? 1 : rnd() < .3 ? 2 : 0,
+        x: CX + halfWidth(s) * .93 * Math.sin(a) + (rnd() - .5) * .006,
+        y: TOP + s * (BOT - TOP) + (rnd() - .5) * .008
+      });
     }
   }
+
+  function spark(x, y, k) {
+    var o = {
+      x: x, y: y, vx: (Math.random() - .5) * .0006 * k, vy: (.0004 + Math.random() * .0012) * k,
+      turn: Math.random() * 6.28, spin: .05 + Math.random() * .15, size: .002 + Math.random() * .003,
+      shine: Math.random() < .3, color: FOIL[Math.random() * 5 | 0], life: 1, floor: BOT + .02 + Math.random() * .12
+    };
+    parts.push(o);
+    tree.dataset.sparks = parts.length;
+    return o;
+  }
+
+  function rain(n, d) {
+    for (var i = 0; i < n; i++) {
+      var edge = Math.min(BOT, d * 1.5 - .17), y = TOP - .04 + Math.random() * Math.max(.05, edge - TOP);
+      spark(CX + (Math.random() * 2 - 1) * (halfWidth(clamp(y, TOP, BOT)) + .02), y, 1);
+    }
+  }
+
+  if (!still) tree.addEventListener('pointermove', function (e) {
+    var b = frame.getBoundingClientRect();
+    for (var i = 0; i < 2; i++) {
+      var o = spark((e.clientX - b.left) / b.width + (Math.random() - .5) * .01, (e.clientY - b.top) / b.height, .6);
+      o.vy *= .4;
+      o.floor = o.y + .08 + Math.random() * .1;
+    }
+  });
 
   function measure() {
     top = header ? Math.max(0, Math.round(header.getBoundingClientRect().height)) : 0;
     root.style.setProperty('--ng-top', top + 'px');
-    W = cv.width = frame.offsetWidth;
-    H = cv.height = frame.offsetHeight;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = cv.width = Math.round(frame.offsetWidth * dpr);
+    H = cv.height = Math.round(frame.offsetHeight * dpr);
   }
 
   // Курсор на ёлке — колесо наряжает, страница стоит. Нарядилась — вниз едет страница,
@@ -96,24 +137,58 @@
 
     ctx.clearRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'lighter';
+    // три рисунка гирлянды сменяют друг друга
+    var mode = t / 9 % 3, m = Math.floor(mode), blend = clamp(mode - m, .85, 1), w = [0, 0, 0];
+    w[m] = 1 - blend;
+    w[(m + 1) % 3] = blend;
     bulbs.forEach(function (b) {
       var on = clamp(lit * 1.3 - (1 - b.s), 0, .3);
       if (!on) return;
-      var size = W * .017 * (.8 + .2 * b.depth);
-      ctx.globalAlpha = on * (.55 + .45 * Math.sin(t * 3 + b.phase) * Math.sin(t * 1.7 + b.phase)) * (.55 + .45 * (b.depth + .3) / 1.3);
-      ctx.drawImage(glow, b.x * W - size, b.y * H - size, size * 2, size * 2);
+      var steady = .82 + .18 * Math.sin(t * b.speed + b.phase) * Math.sin(t * b.speed * .63 + b.phase * 2);
+      var chase = .25 + .75 * Math.pow(.5 + .5 * Math.sin(t * 2.4 + b.chase * Math.PI / 2), 2);
+      var wave = .3 + .7 * Math.pow(.5 + .5 * Math.sin(t * 1.6 - b.s * 14), 1.6);
+      if (!still && b.pop <= 0 && Math.random() < .0015) b.pop = 1;
+      b.pop = Math.max(0, b.pop - .03);
+      var k = w[0] * steady + w[1] * chase + w[2] * wave + b.pop * .5, vis = .35 + .65 * (b.depth + .3) / 1.3;
+      var size = W * .017 * (.7 + .3 * vis) * (.75 + .45 * k);
+      ctx.globalAlpha = Math.min(1, on * vis * k);
+      ctx.drawImage(GLOW[b.tint], b.x * W - size, b.y * H - size, size * 2, size * 2);
     });
+    ctx.globalCompositeOperation = 'source-over';
 
-    var fall = d > prevD ? Math.min(16, Math.round((d - prevD) * 600)) : 0;
+    var step = d - prevD;
     prevD = d;
-    if (!still) for (var n = 0; n < fall; n++) gold.push({ x: .499 + (Math.random() * 2 - 1) * .13, y: TOP + Math.random() * d * .4, v: .001 + Math.random() * .002, life: 1 });
-    gold = gold.filter(function (o) { return o.life > 0; });
-    gold.forEach(function (o) {
-      o.y += o.v;
-      o.life -= .008;
-      ctx.globalAlpha = Math.max(0, o.life);
-      var z = W * .004;
-      ctx.drawImage(glow, o.x * W - z, o.y * H - z, z * 2, z * 2);
+    if (!still) {
+      if (step > 0) rain(Math.min(22, Math.ceil(step * 800)), d);
+      if (step < 0) parts.forEach(function (o) { o.life = Math.min(o.life, .4); });
+      if (d > .98 && Math.random() < .3) rain(1, d);
+    }
+    parts = parts.filter(function (o) { return o.life > 0; });
+    parts.forEach(function (o) {
+      o.x += o.vx;
+      o.y += o.vy;
+      o.vx += (Math.random() - .5) * .00004;
+      o.turn += o.spin;
+      if (o.y > o.floor) {
+        o.y = o.floor;
+        o.vx = o.vy = 0;
+        o.life -= .012;
+      }
+      var size = o.size * W, face = Math.abs(Math.cos(o.turn));
+      ctx.globalAlpha = Math.min(1, o.life) * (.45 + .55 * face);
+      ctx.fillStyle = o.color;
+      ctx.save();
+      ctx.translate(o.x * W, o.y * H);
+      ctx.rotate(o.turn * .3);
+      ctx.fillRect(-size / 2, -size * face / 2, size, size * face + .6);
+      ctx.restore();
+      if (o.shine && face > .7) {
+        var z = size * 5 * face;
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = Math.min(1, o.life) * (face - .7) * 2.5;
+        ctx.drawImage(GLOW[2], o.x * W - z, o.y * H - z, z * 2, z * 2);
+        ctx.globalCompositeOperation = 'source-over';
+      }
     });
     ctx.globalAlpha = 1;
   }
