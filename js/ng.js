@@ -40,9 +40,10 @@
     H = cv.height = frame.offsetHeight;
   }
 
-  // Курсор на ёлке — колесо наряжает, страница стоит. Нарядилась — колесо снова у страницы, насовсем.
+  // Курсор на ёлке — колесо наряжает, страница стоит. Нарядилась — вниз едет страница,
+  // вверх ёлка откручивается назад (№524). Голая — вверх тоже едет страница.
   // На тач-экранах колеса нет: ёлка наряжается сама, когда показалась.
-  var WHEEL = 1100, PAUSE = 600, target = 0, shownP = 0, freeAt = 0, playing = false;
+  var WHEEL = 1100, PAUSE = 600, SETTLE = 300, target = 0, shownP = 0, freeAt = 0, settledAt = 0, playing = false;
 
   function progress() {
     if (still) return 1;
@@ -54,9 +55,15 @@
 
   tree.addEventListener('wheel', function (e) {
     if (still || !e.cancelable || e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-    if (target >= 1) {
+    var now = Date.now();
+    if (target >= 1 && e.deltaY > 0) {
       // короткая пауза, чтобы инерция не унесла мимо звезды
-      if (e.deltaY > 0 && Date.now() < freeAt) e.preventDefault();
+      if (now < freeAt) e.preventDefault();
+      return;
+    }
+    // приехали снизу: остаток той же прокрутки ёлку не раздевает
+    if (e.deltaY < 0 && now < settledAt) {
+      settledAt = now + SETTLE;
       return;
     }
     var box = tree.getBoundingClientRect();
@@ -65,8 +72,9 @@
     e.preventDefault();
     var px = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? innerHeight : 1);
     target = Math.min(1, Math.max(0, target + Math.max(-240, Math.min(240, px)) / WHEEL));
-    if (target >= 1) freeAt = Date.now() + PAUSE;
+    if (target >= 1) freeAt = now + PAUSE;
   }, { passive: false });
+  addEventListener('scroll', function () { settledAt = Date.now() + SETTLE; }, { passive: true });
 
   if (touch) new IntersectionObserver(function (e) { if (e[0].isIntersecting) playing = true; }, { threshold: .6 }).observe(tree);
 
@@ -120,6 +128,39 @@
   addEventListener('load', measure);
   new IntersectionObserver(function (e) { seen = e[0].isIntersecting; }).observe(hero);
   if (still) draw(0); else requestAnimationFrame(loop);
+
+  /* ---------- «Вживую» ---------- */
+  var inView = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) { var p = e.target.play(); if (p) p.catch(function () {}); } else e.target.pause();
+    });
+  }, { threshold: .2 });
+  $$('.ng-gal video').forEach(function (v) { if (!still) inView.observe(v); });
+
+  $$('.ng-sl').forEach(function (box, k) {
+    var im = [].slice.call(box.querySelectorAll('img')), row = box.querySelector('.ng-sl__dots'), at = 0, timer, x0 = null;
+    var dots = im.map(function () { return row.appendChild(document.createElement('i')); });
+    dots[0].classList.add('is-on');
+    function go(n) {
+      im[at].classList.remove('is-on'); dots[at].classList.remove('is-on');
+      at = (n + im.length) % im.length;
+      im[at].classList.add('is-on'); dots[at].classList.add('is-on');
+      im[(at + 1) % im.length].loading = 'eager';
+    }
+    function run() {
+      clearInterval(timer);
+      if (!still) timer = setInterval(function () { go(at + 1); }, 4200 + k * 700);
+    }
+    box.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
+    box.addEventListener('pointerup', function (e) {
+      if (x0 === null) return;
+      var dx = e.clientX - x0;
+      x0 = null;
+      go(Math.abs(dx) > 30 && dx > 0 ? at - 1 : at + 1);
+      run();
+    });
+    run();
+  });
 
   gifts.forEach(function (el) {
     el.addEventListener('click', function () {

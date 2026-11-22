@@ -24,44 +24,89 @@
 
 .ng-gift{position:absolute;translate:-50% 0;opacity:0;pointer-events:none;text-decoration:none}
 .is-open .ng-gift{pointer-events:auto}
-.ng-gift--1{left:38.5%;bottom:11%;width:9%;aspect-ratio:758/752}
-.ng-gift--2{left:50%;bottom:10%;width:10%;aspect-ratio:964/979}
-.ng-gift--3{left:61.5%;bottom:11%;width:9%;aspect-ratio:778/739}
+.ng-gift--1{left:38.5%;bottom:14.5%;width:9%;aspect-ratio:758/752}
+.ng-gift--2{left:50%;bottom:13.5%;width:10%;aspect-ratio:964/979}
+.ng-gift--3{left:61.5%;bottom:14.5%;width:9%;aspect-ratio:778/739}
 .ng-gift>img{position:absolute;inset:0;width:100%;height:100%}
 .ng-gift>i{position:absolute;left:50%;top:30%;width:130%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;opacity:var(--open,0);mix-blend-mode:screen;
   background:radial-gradient(circle,rgba(255,240,200,.9),rgba(255,200,110,.3) 30%,transparent 62%)}
 .ng-gift__lid{transform-origin:50% 40%}
-.ng-gift>span{position:absolute;left:50%;top:102%;translate:-50% 0;width:125%;text-align:center;font:600 clamp(11px,1vw,15px)/1.2 var(--ktg-font);color:var(--ng-gold);opacity:var(--open,0);text-shadow:0 1px 8px #000}
+.ng-gift>span{position:absolute;left:50%;top:102%;translate:-50% 0;width:124%;text-align:center;text-wrap:balance;font:600 clamp(10px,calc(max(100cqw,177.78cqh)*.0158),14px)/1.15 var(--ktg-font);color:var(--ng-gold);opacity:var(--open,0);text-shadow:0 1px 8px #000}
+.ng-gift--2>span{width:112%}
 
 .ng-hint{position:absolute;left:16px;top:16px;max-width:calc(50% - 44px);display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:99px;background:rgba(7,11,9,.72);color:var(--ng-gold);font-size:15px;line-height:20px;pointer-events:none}
 .ng-hint__wheel path{animation:ngWheel 1.4s ease-in-out infinite}
 .ng-hint__b,.is-open .ng-hint__a,.is-open .ng-hint__wheel,.ng-hint__touch{display:none}
 .is-open .ng-hint__b{display:inline}
 @keyframes ngWheel{50%{transform:translateY(6px)}}
-.ng-progress{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(240,217,154,.18)}
-.ng-progress i{display:block;height:100%;width:calc(var(--p,0)*100%);background:var(--ng-gold)}
 
-/* комплекты */
-.ng-kits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ktg-gap);align-items:start;margin-top:24px}
-.ng-kit{background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
+/* комплекты: тёмные глубокие, значок за край, огоньки (№526); список и чек (№528) */
+.ng-kits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ktg-gap);margin-top:24px}
+.ng-kits:has([open]){align-items:start}
+.ng-kit{display:flex;flex-direction:column;background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
 .ng-kit.is-on{outline:2px solid var(--ktg-accent)}
-.ng-kit__head{position:relative;padding:28px 24px 20px;min-height:216px;background:#F7E7E1;color:var(--ktg-ink);display:flex;flex-direction:column;align-items:flex-start}
-.ng-kit__head img{width:104px;height:104px;object-fit:contain;margin-bottom:8px;filter:brightness(2.3) saturate(1.15)}
-#k2 .ng-kit__head{background:#F5E9CC}
-#k3 .ng-kit__head{background:#E3E7F3}
-.ng-kit__head h3{font-size:22px;line-height:28px;color:var(--ktg-ink);margin-bottom:6px}
-.ng-kit__head p{font-size:14px;line-height:20px;opacity:.78}
-.ng-kit__body{padding:20px 24px 24px}
+.ng-kit__head{--glow:#ffc46b;position:relative;isolation:isolate;overflow:hidden;min-height:264px;padding:28px 24px 24px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;
+  color:#f3e2c4;background:radial-gradient(120% 95% at 85% 0,#7a2420 0,#3d1113 42%,#150506 100%)}
+#k2 .ng-kit__head{--glow:#f0d99a;color:#f4f0e6;background:radial-gradient(120% 95% at 85% 0,#4b3814 0,#171208 44%,#030303 100%)}
+#k3 .ng-kit__head{--glow:#cdbfff;color:#ece6ff;background:radial-gradient(120% 95% at 85% 0,#353a8c 0,#141746 42%,#05061a 100%)}
+.ng-kit__head h3{max-width:82%;font-size:28px;line-height:33px;color:inherit;margin-bottom:8px;text-wrap:balance}
+.ng-kit__head p{max-width:340px;font-size:14px;line-height:20px;opacity:.82}
+.ng-kit__art{position:absolute;z-index:-1;right:-76px;top:-76px;width:268px;height:268px;opacity:.62;pointer-events:none}
+#k2 .ng-kit__art,#k3 .ng-kit__art{right:-96px;top:-96px;width:300px;height:300px}
+.ng-lights{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.ng-lights i{position:absolute;width:var(--s);height:var(--s);border-radius:50%;background:var(--glow);box-shadow:0 0 calc(var(--s)*2.5) calc(var(--s)*.6) var(--glow);
+  opacity:.15;animation:ngTwinkle var(--t) ease-in-out var(--w) infinite}
+@keyframes ngTwinkle{50%{opacity:.85}}
+.ng-kit__body{flex:1;display:flex;flex-direction:column;padding:20px 24px 24px}
 .ng-kit__price{font-size:24px;line-height:30px;font-weight:600;color:var(--ktg-ink)}
 .ng-kit__price small{display:block;font-size:14px;font-weight:400;color:var(--ktg-text-2)}
-.ng-shots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:16px 0}
-.ng-shots img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
-.ng-check summary{cursor:pointer;color:var(--ktg-accent);font-weight:500;padding:8px 0}
-.ng-check ul{list-style:none;padding:0;margin:4px 0 12px}
-.ng-check li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--ktg-border);font-size:14px;line-height:18px}
-.ng-check li small{display:block;color:var(--ktg-text-2)}
-.ng-check li b{white-space:nowrap;font-weight:500}
+.ng-list{flex:1;list-style:none;padding:0;margin:18px 0 10px}
+.ng-list li{margin-bottom:12px}
+.ng-list li>b{display:block;margin-bottom:3px;font-size:11px;line-height:16px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ktg-text-2)}
+.ng-list [data-item]{font-size:14px;line-height:21px;color:var(--ktg-ink)}
+.ng-list [data-item]:not(:last-child)::after{content:" · ";color:var(--ktg-text-2)}
+.ng-list button{display:inline;max-width:100%;padding:0;border:0;background:none;color:inherit;font:inherit;line-height:inherit;text-align:left;cursor:pointer}
+.ng-list button:hover{color:var(--ktg-accent)}
+.ng-check summary{display:flex;align-items:center;gap:8px;padding:8px 0;list-style:none;cursor:pointer;color:var(--ktg-accent);font-weight:500}
+.ng-check summary::-webkit-details-marker{display:none}
+.ng-receipt{margin:10px 0 8px;padding:22px 16px 28px;background:#f7f3e9;color:#1d1c19;font:13px/1.4 "PT Mono",ui-monospace,monospace;
+  -webkit-mask:conic-gradient(from 135deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 8px repeat-x,linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat;
+  mask:conic-gradient(from 135deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 8px repeat-x,linear-gradient(#000 0 0) top/100% calc(100% - 8px) no-repeat}
+.ng-receipt p{margin:0}
+.ng-receipt__head{text-align:center;font-size:12px}
+.ng-receipt__head b{display:block;font-size:16px;letter-spacing:.18em}
+.ng-receipt .ng-receipt__title{margin:14px 0 12px;padding:7px 0;border-block:1px dashed #9a958a;text-align:center;letter-spacing:.1em}
+.ng-receipt dl{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:0 0 12px;font-size:12px}
+.ng-receipt dt{color:#6b675e}
+.ng-receipt dd{margin:0;text-align:right}
+.ng-receipt ul{list-style:none;margin:0;padding:8px 0;border-block:1px dashed #9a958a}
+.ng-receipt li{display:flex;justify-content:space-between;gap:10px;padding:4px 0}
+.ng-receipt li>span{min-width:0;overflow-wrap:anywhere}
+.ng-receipt li small{display:block;font-size:11px;color:#6b675e}
+.ng-receipt li b{white-space:nowrap;font-weight:400}
+.ng-receipt__sum,.ng-receipt__per{display:flex;justify-content:space-between}
+.ng-receipt .ng-receipt__sum{margin-top:10px;font-size:17px;font-weight:700}
+.ng-receipt .ng-receipt__note{margin:12px 0 0;font-size:11px;color:#6b675e}
+.ng-receipt .ng-receipt__bye{margin-top:16px;text-align:center;font-size:11px;letter-spacing:.16em;color:#6b675e}
 .ng-kit .ktg-btn{width:100%;margin-top:12px}
+
+/* «Вживую» — мозаика ng-vip (№530) */
+.ng-gal,.ng-gal__row{display:grid;gap:var(--ktg-gap)}
+.ng-gal{margin-top:24px}
+.ng-gal__row--1{grid-template-columns:minmax(0,1.7778fr) minmax(0,.8fr) minmax(0,.8fr)}
+.ng-gal__row--2{grid-template-columns:minmax(0,.8fr) minmax(0,.5625fr) minmax(0,1.5fr)}
+.ng-mf{position:relative;margin:0;overflow:hidden;border-radius:var(--ktg-r-lg);background:var(--ng-night)}
+.ng-mf img,.ng-mf video{display:block;width:100%;height:100%;object-fit:cover}
+.ng-mf--169{aspect-ratio:16/9}
+.ng-mf--45{aspect-ratio:4/5}
+.ng-mf--916{aspect-ratio:9/16}
+.ng-mf--32{aspect-ratio:3/2}
+.ng-sl{cursor:pointer;touch-action:pan-y}
+.ng-sl img{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.ng-sl img.is-on{opacity:1}
+.ng-sl__dots{position:absolute;left:0;right:0;bottom:12px;z-index:1;display:flex;justify-content:center;gap:6px}
+.ng-sl__dots i{width:6px;height:6px;border-radius:3px;background:rgba(246,226,168,.45);transition:width .3s}
+.ng-sl__dots i.is-on{width:18px;background:var(--ng-gold)}
 
 /* всё в одном окне */
 .ng-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 16px}
@@ -77,7 +122,7 @@
 .ng-card__foot>button.is-on{background:var(--ktg-accent);color:#fff}
 .ng-cart b{margin-left:8px}
 
-.ng-shots button,.ng-check li button{padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ng-check li button{padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .ng-check li button:hover{color:var(--ktg-accent)}
 .ng-seg{flex-wrap:wrap}
 .ng-unpick{margin-left:6px;padding:0 4px;border:0;background:none;color:inherit;opacity:.6;font:inherit;cursor:pointer}
@@ -101,10 +146,15 @@
   .ng-hint{font-size:13px;padding:8px 14px;border-radius:14px}
   .ng-gift>span{display:none}
   .ng-kits{grid-template-columns:minmax(0,1fr)}
-  .ng-kit__head{min-height:0}
+  .ng-kit__head{min-height:210px}
+  .ng-gal,.ng-gal__row{gap:10px}
+  .ng-gal__row--1{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ng-gal__row--2{grid-template-columns:minmax(0,.8fr) minmax(0,.5625fr)}
+  .ng-mf--full{grid-column:1/-1}
   .ng-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
   .ng-tabs button{flex:none}
 }
 @media (prefers-reduced-motion:reduce){
   .ng-hint__wheel path{animation:none}
+  .ng-lights i{animation:none;opacity:.5}
 }
