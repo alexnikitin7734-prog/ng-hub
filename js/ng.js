@@ -1,4 +1,4 @@
-/* НГ-лендинг: ёлка по прокрутке, вкладки с карточками, подборка. Скролл страницы не перехватываем. */
+/* НГ-лендинг: ёлка от колеса над рамкой, вкладки с карточками, подборка. */
 (function () {
   'use strict';
   var root = document.getElementById('ktg');
@@ -8,10 +8,10 @@
   var clamp = function (x, a, b) { return Math.min(1, Math.max(0, (x - a) / (b - a))); };
   var smooth = function (t) { return t * t * (3 - 2 * t); };
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var narrow = matchMedia('(max-width: 900px)');
+  var touch = matchMedia('(hover: none)').matches;
 
   /* ---------- ёлка ---------- */
-  var hero = $('[data-hero]'), track = $('[data-track]'), tree = $('[data-tree]'), frame = $('[data-frame]');
+  var hero = $('[data-hero]'), tree = $('[data-tree]'), frame = $('[data-frame]');
   var cv = $('[data-fx]'), ctx = cv.getContext('2d'), gifts = $$('.ng-gift');
   var header = document.getElementById('hdr26');
   var TOP = .155, BOT = .8, top = 0, W = 0, H = 0, prevD = 0, bulbs = [], gold = [], seen = true;
@@ -41,12 +41,35 @@
     H = cv.height = frame.offsetHeight;
   }
 
+  // Курсор на ёлке — колесо наряжает, страница стоит. Нарядилась — колесо снова у страницы, насовсем.
+  // На тач-экранах колеса нет: ёлка наряжается сама, когда показалась.
+  var WHEEL = 1100, PAUSE = 600, target = 0, shownP = 0, freeAt = 0, playing = false;
+
   function progress() {
     if (still) return 1;
-    var box = narrow.matches ? track : hero;
-    var pinned = narrow.matches ? tree.offsetHeight + 8 : innerHeight - top;
-    return clamp(top - box.getBoundingClientRect().top, 0, Math.max(1, box.offsetHeight - pinned));
+    if (playing) target = Math.min(1, target + 1 / 240);
+    shownP += (target - shownP) * .16;
+    if (Math.abs(target - shownP) < .001) shownP = target;
+    return shownP;
   }
+
+  tree.addEventListener('wheel', function (e) {
+    if (still || !e.cancelable || e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    if (target >= 1) {
+      // короткая пауза, чтобы инерция не унесла мимо звезды
+      if (e.deltaY > 0 && Date.now() < freeAt) e.preventDefault();
+      return;
+    }
+    var box = tree.getBoundingClientRect();
+    var whole = box.top >= top - 4 && box.bottom <= innerHeight + 4;
+    if (!whole || (e.deltaY < 0 && target <= 0)) return;
+    e.preventDefault();
+    var px = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? innerHeight : 1);
+    target = Math.min(1, Math.max(0, target + Math.max(-240, Math.min(240, px)) / WHEEL));
+    if (target >= 1) freeAt = Date.now() + PAUSE;
+  }, { passive: false });
+
+  if (touch) new IntersectionObserver(function (e) { if (e[0].isIntersecting) playing = true; }, { threshold: .6 }).observe(tree);
 
   function draw(now) {
     var t = now / 1000, p = progress();

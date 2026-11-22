@@ -3,13 +3,15 @@
 .ng-root [hidden]{display:none !important}
 .ng-root [id]{scroll-margin-top:calc(var(--ng-top) + 12px)}
 
-/* первый экран: закреплён, пока колёсико наряжает ёлку */
-.ng-hero{position:relative;height:280vh}
-.ng-hero__pin{position:sticky;top:var(--ng-top)}
-.ng-hero__grid{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;height:calc(100vh - var(--ng-top));height:calc(100svh - var(--ng-top));padding-top:16px;padding-bottom:16px}
-.ng-hero__text{min-height:0;padding:32px 48px}
-.ng-hero__text h1{font-size:clamp(32px,3.4vw,46px);line-height:1.18;margin-bottom:16px}
+/* первый экран: вровень с ноутбуком, колесо наряжает ёлку только над рамкой */
+.ng-hero{position:relative;padding:16px 0}
+.ng-hero__grid{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;height:min(480px,calc(100vh - var(--ng-top) - 32px));height:min(480px,calc(100svh - var(--ng-top) - 32px))}
+.ng-hero__text{min-height:0;padding:20px 40px}
+.ng-hero__text h1{font-size:clamp(28px,2.8vw,38px);line-height:1.18;margin-bottom:10px}
 .ng-hero__text h1 em{font-style:normal;color:var(--ktg-accent)}
+.ng-hero__text .ktg-hero__lead{font-size:16px;line-height:24px;margin-bottom:16px}
+.ng-hero__text .ktg-hero__actions{margin-bottom:16px}
+.ng-hero__text .ktg-facts{padding-top:12px}
 .ng-track{min-height:0;min-width:0}
 .ng-tree{position:relative;height:100%;overflow:hidden;border-radius:var(--ktg-r-lg);background:var(--ng-night);container-type:size}
 .ng-tree__frame{position:absolute;left:50%;bottom:0;translate:-50% 0;width:max(100cqw,177.78cqh);aspect-ratio:16/9;transform-origin:50% 60%}
@@ -79,21 +81,19 @@
 .ng-atrium .ktg-lead{margin-bottom:20px}
 .ng-preview,.ng-chosen{margin-top:10px;font-weight:500}
 
-@media (hover:none),(max-width:900px){
+@media (hover:none){
   .ng-hint__mouse,.ng-hint__wheel{display:none}
   .ng-hint__touch{display:inline}
 }
-@media (max-height:760px) and (min-width:901px){
+@media (max-height:680px) and (min-width:901px),(min-width:901px) and (max-width:1199px){
   .ng-hero__text .ktg-facts{display:none}
 }
 @media (max-width:900px){
-  /* на телефоне текст уезжает как обычно, закрепляется только ёлка */
-  .ng-hero{height:auto}
-  .ng-hero__pin{position:static}
   .ng-hero__grid{display:block;height:auto}
-  .ng-hero__text{padding:24px 20px}
-  .ng-track{height:230vh;margin-top:12px}
-  .ng-tree{position:sticky;top:calc(var(--ng-top) + 8px);height:min(125vw,calc(100svh - var(--ng-top) - 24px))}
+  .ng-hero__text{padding:20px}
+  .ng-hero__text .ktg-facts{display:none}
+  .ng-track{margin-top:12px}
+  .ng-tree{height:min(100vw,480px,calc(100svh - var(--ng-top) - 100px))}
   .ng-hint{font-size:13px;padding:8px 14px;border-radius:14px}
   .ng-gift>span{display:none}
   .ng-kits{grid-template-columns:minmax(0,1fr)}
@@ -105,8 +105,5 @@
   .ng-atrium>div{padding:20px}
 }
 @media (prefers-reduced-motion:reduce){
-  .ng-hero,.ng-track{height:auto}
-  .ng-hero__pin{position:static}
-  .ng-tree{position:relative;height:min(520px,80vh)}
   .ng-hint__wheel path{animation:none}
 }
