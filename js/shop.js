@@ -36,6 +36,43 @@
 
   function cost(it) { return it.pp ? it.v * state.guests : it.v; }
 
+  /* ---------- комплекты с карточек сайта (№553) ---------- */
+  var SITE = 'https://arenda-attrakcionov.ru';
+  function setsOf(it) { return (window.NG_SETS || {})[it.u.replace(/\/$/, '').split('/').pop()] || []; }
+
+  function setsList(it) {
+    var all = setsOf(it);
+    if (all.length < 2) return null;
+    var ul = el('ul', 'ng-sets');
+    all.slice(0, 3).forEach(function (s) {
+      var li = el('li');
+      li.append(el('span', '', s.n), el('b', '', s.p.replace(/\s*\/\s*\d+\s*(час[а-я]*|ч)\.?$/, '')));
+      ul.appendChild(li);
+    });
+    if (all.length > 3) ul.appendChild(el('li', 'ng-sets__more', 'ещё ' + (all.length - 3)));
+    return ul;
+  }
+
+  function showSets(it) {
+    var box = $('[data-qv-opts]');
+    box.textContent = '';
+    setsOf(it).forEach(function (s) {
+      var row = el(s.i ? 'button' : 'div', 'ng-opt'), name = el('span', '', s.n);
+      if (s.i) {
+        var img = el('img');
+        row.type = 'button';
+        row.dataset.photo = SITE + s.i;
+        img.src = SITE + s.i;
+        img.alt = '';
+        img.loading = 'lazy';
+        row.appendChild(img);
+      }
+      if (s.s) name.appendChild(el('small', '', s.s));
+      row.append(name, el('b', '', s.p));
+      box.appendChild(row);
+    });
+  }
+
   /* ---------- карточки ---------- */
   DATA.forEach(function (group) {
     var b = el('button', 'ktg-group'), img = el('img'), n = group.items.length;
@@ -76,11 +113,14 @@
       img.alt = '';
       img.loading = 'lazy';
       view.append(img, el('span', 'ng-card__name', it.n));
+      var sets = setsList(it);
       var add = el('button');
       add.type = 'button';
       add.dataset.pick = it.id;
       foot.append(el('b', '', it.p + (it.pp ? ' / гость' : '')), add);
-      card.append(view, foot);
+      card.appendChild(view);
+      if (sets) card.appendChild(sets);
+      card.appendChild(foot);
       grid.appendChild(card);
     });
     $('[data-more]').hidden = shown >= found.length;
@@ -130,6 +170,7 @@
     $('[data-qv-name]').textContent = it.n;
     $('[data-qv-price]').textContent = it.p + (it.pp ? ' на гостя' : '');
     $('[data-qv-link]').href = it.u;
+    showSets(it);
     var sim = $('[data-qv-sim]');
     sim.textContent = '';
     photos.forEach(function (url, n) {
