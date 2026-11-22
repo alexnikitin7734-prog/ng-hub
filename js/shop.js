@@ -27,27 +27,48 @@
   var FOOD = {
     furshet: { name: 'Фуршет', icon: 'ik-furshet', waiterPer: 20, levels: [[2900, '400 г · 200 мл'], [3800, '600 г · 300 мл'], [4900, '750 г · 500 мл']] },
     banket: { name: 'Банкет', icon: 'ik-vip', waiterPer: 10, barmanPer: 50, levels: [[3200, '700 г · 400 мл'], [4500, '950 г · 600 мл'], [6000, '1200 г · 850 мл']] },
-    kofe: { name: 'Кофе-брейк', icon: 'ik-kofe', waiterPer: 40, levels: [[400, '100 г · 350 мл'], [800, '200 г · 500 мл'], [1400, '400 г · 750 мл']] },
     none: { name: 'Без еды', icon: 'ik-dekor' }
   };
   var LEVELS = ['Мини', 'Миди', 'Макси'];
   var state = { food: 'furshet', level: 0, guests: 50, staff: true, picks: [], kit: '', used: false };
-  var cur = DATA[0], shown = 12, list = [], at = -1;
+  var cur = DATA[0], shown = 12, list = [], at = -1, found = [], query = '', sort = 'pop', typing;
   var grid = $('[data-grid]'), tabs = $('[data-tabs]'), modal = $('[data-qv]'), overlay = $('[data-overlay]');
 
   function cost(it) { return it.pp ? it.v * state.guests : it.v; }
 
   /* ---------- карточки ---------- */
   DATA.forEach(function (group) {
-    var b = el('button', '', group.name);
+    var b = el('button', 'ktg-group'), img = el('img'), n = group.items.length;
     b.type = 'button';
     b.dataset.group = group.slug;
+    img.src = 'img/ikonki/ik-' + group.icon + '.webp';
+    img.alt = '';
+    img.loading = 'lazy';
+    b.append(img, el('b', '', group.name), el('small', '', n + ' ' + plural(n, 'позиция', 'позиции', 'позиций')));
     tabs.appendChild(b);
   });
 
+  function pickList() {
+    var out = cur.items.slice(), seenIds = {};
+    if (query) {
+      out = [];
+      DATA.forEach(function (group) {
+        group.items.forEach(function (it) {
+          if (seenIds[it.id] || it.n.toLowerCase().replace(/ё/g, 'е').indexOf(query) === -1) return;
+          seenIds[it.id] = 1;
+          out.push(it);
+        });
+      });
+    }
+    if (sort !== 'pop') out.sort(function (a, b) { return sort === 'asc' ? a.v - b.v : b.v - a.v; });
+    return out;
+  }
+
   function renderGrid() {
     grid.textContent = '';
-    cur.items.slice(0, shown).forEach(function (it) {
+    found = pickList();
+    $('[data-count]').textContent = query ? 'Найдено: ' + found.length : cur.name;
+    found.slice(0, shown).forEach(function (it) {
       var card = el('article', 'ng-card'), view = el('button', 'ng-card__view'), img = el('img'), foot = el('div', 'ng-card__foot');
       view.type = 'button';
       view.dataset.view = it.id;
@@ -62,9 +83,9 @@
       card.append(view, foot);
       grid.appendChild(card);
     });
-    $('[data-more]').hidden = shown >= cur.items.length;
+    $('[data-more]').hidden = shown >= found.length;
     $('[data-catlink]').href = cur.url;
-    $$('[data-group]', tabs).forEach(function (b) { b.classList.toggle('is-on', b.dataset.group === cur.slug); });
+    $$('[data-group]', tabs).forEach(function (b) { b.classList.toggle('is-on', !query && b.dataset.group === cur.slug); });
     document.dispatchEvent(new CustomEvent('ktg:group', { detail: cur.slug }));
     syncPicks();
   }
@@ -83,6 +104,8 @@
     if (!next) return;
     cur = next;
     shown = 12;
+    query = '';
+    $('[data-search]').value = '';
     renderGrid();
     if (scroll) document.getElementById('menu').scrollIntoView();
   }
@@ -236,7 +259,7 @@
       var scope = t.closest('.ng-kit');
       list = scope
         ? $$('.ng-check [data-view]', scope).map(function (x) { return +x.dataset.view; })
-        : cur.items.map(function (x) { return x.id; });
+        : found.map(function (x) { return x.id; });
       view(+t.dataset.view);
     } else if (t.matches('[data-photo]')) {
       photo(t.dataset.photo);
@@ -252,6 +275,15 @@
     else if (t.matches('[data-staff]')) { state.staff = !state.staff; renderCalc(); }
     else if (t.matches('[data-group]')) go(t.dataset.group, !tabs.contains(t));
     else if (t.matches('[data-more]')) { shown += 12; renderGrid(); }
+    else if (t.matches('[data-dd-btn]')) $('[data-dd]').classList.toggle('is-open');
+    else if (t.matches('[data-sort]')) {
+      sort = t.dataset.sort;
+      shown = 12;
+      $$('[data-sort]').forEach(function (b) { b.classList.toggle('is-on', b === t); });
+      $('[data-dd-label]').textContent = t.textContent;
+      $('[data-dd]').classList.remove('is-open');
+      renderGrid();
+    }
     else if (t.matches('[data-preset]')) {
       state.food = t.dataset.preset;
       state.used = true;
@@ -267,6 +299,14 @@
     }
   });
   overlay.addEventListener('click', close);
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('[data-dd]')) $('[data-dd]').classList.remove('is-open');
+  });
+  $('[data-search]').addEventListener('input', function () {
+    var v = this.value.trim().toLowerCase().replace(/ё/g, 'е');
+    clearTimeout(typing);
+    typing = setTimeout(function () { query = v; shown = 12; renderGrid(); }, 150);
+  });
   document.addEventListener('keydown', function (e) {
     if (!modal.classList.contains('is-open')) return;
     if (e.key === 'Escape') close();
