@@ -1,0 +1,112 @@
+/* НГ-лендинг: только отличия от каркаса кейтеринга (ktg.css) */
+.ng-root{--ng-top:148px;--ng-night:#070b09;--ng-gold:#f0d99a}
+.ng-root [hidden]{display:none !important}
+.ng-root [id]{scroll-margin-top:calc(var(--ng-top) + 12px)}
+
+/* первый экран: закреплён, пока колёсико наряжает ёлку */
+.ng-hero{position:relative;height:280vh}
+.ng-hero__pin{position:sticky;top:var(--ng-top)}
+.ng-hero__grid{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;height:calc(100vh - var(--ng-top));height:calc(100svh - var(--ng-top));padding-top:16px;padding-bottom:16px}
+.ng-hero__text{min-height:0;padding:32px 48px}
+.ng-hero__text h1{font-size:clamp(32px,3.4vw,46px);line-height:1.18;margin-bottom:16px}
+.ng-hero__text h1 em{font-style:normal;color:var(--ktg-accent)}
+.ng-track{min-height:0;min-width:0}
+.ng-tree{position:relative;height:100%;overflow:hidden;border-radius:var(--ktg-r-lg);background:var(--ng-night);container-type:size}
+.ng-tree__frame{position:absolute;left:50%;bottom:0;translate:-50% 0;width:max(100cqw,177.78cqh);aspect-ratio:16/9;transform-origin:50% 60%}
+.ng-tree__frame>img,.ng-tree__frame>canvas{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover}
+.ng-tree__frame>canvas{pointer-events:none}
+.ng-tree__gold{-webkit-mask:linear-gradient(#000 calc(var(--d,0)*150% - 50%),transparent calc(var(--d,0)*150%));mask:linear-gradient(#000 calc(var(--d,0)*150% - 50%),transparent calc(var(--d,0)*150%))}
+
+.ng-star{position:absolute;left:49.9%;top:13%;width:15%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;pointer-events:none;mix-blend-mode:screen;opacity:var(--star,0);
+  background:radial-gradient(closest-side,#fffbe8 0,#ffe3a0 14%,rgba(255,200,100,.45) 34%,transparent 100%)}
+
+.ng-gift{position:absolute;translate:-50% 0;opacity:0;pointer-events:none;text-decoration:none}
+.is-open .ng-gift{pointer-events:auto}
+.ng-gift--1{left:38.5%;bottom:11%;width:9%;aspect-ratio:758/752}
+.ng-gift--2{left:50%;bottom:10%;width:10%;aspect-ratio:964/979}
+.ng-gift--3{left:61.5%;bottom:11%;width:9%;aspect-ratio:778/739}
+.ng-gift>img{position:absolute;inset:0;width:100%;height:100%}
+.ng-gift>i{position:absolute;left:50%;top:30%;width:130%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;opacity:var(--open,0);mix-blend-mode:screen;
+  background:radial-gradient(circle,rgba(255,240,200,.9),rgba(255,200,110,.3) 30%,transparent 62%)}
+.ng-gift__lid{transform-origin:50% 40%}
+.ng-gift>span{position:absolute;left:50%;top:102%;translate:-50% 0;width:125%;text-align:center;font:600 clamp(11px,1vw,15px)/1.2 var(--ktg-font);color:var(--ng-gold);opacity:var(--open,0);text-shadow:0 1px 8px #000}
+
+.ng-hint{position:absolute;left:16px;top:16px;max-width:calc(50% - 44px);display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:99px;background:rgba(7,11,9,.72);color:var(--ng-gold);font-size:15px;line-height:20px;pointer-events:none}
+.ng-hint__wheel path{animation:ngWheel 1.4s ease-in-out infinite}
+.ng-hint__b,.is-open .ng-hint__a,.is-open .ng-hint__wheel,.ng-hint__touch{display:none}
+.is-open .ng-hint__b{display:inline}
+@keyframes ngWheel{50%{transform:translateY(6px)}}
+.ng-progress{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(240,217,154,.18)}
+.ng-progress i{display:block;height:100%;width:calc(var(--p,0)*100%);background:var(--ng-gold)}
+
+/* комплекты */
+.ng-kits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ktg-gap);align-items:start;margin-top:24px}
+.ng-kit{background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
+.ng-kit.is-on{outline:2px solid var(--ktg-accent)}
+.ng-kit__head{position:relative;padding:28px 24px 20px;min-height:216px;background:var(--ng-night);color:#f3ead8;display:flex;flex-direction:column;align-items:flex-start}
+.ng-kit__head img{width:88px;height:88px;object-fit:contain;margin-bottom:12px}
+.ng-kit__head h3{font-size:22px;line-height:28px;color:var(--ng-gold);margin-bottom:6px}
+.ng-kit__head p{font-size:14px;line-height:20px;opacity:.78}
+.ng-kit__body{padding:20px 24px 24px}
+.ng-kit__price{font-size:24px;line-height:30px;font-weight:600;color:var(--ktg-ink)}
+.ng-kit__price small{display:block;font-size:14px;font-weight:400;color:var(--ktg-text-2)}
+.ng-shots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:16px 0}
+.ng-shots img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.ng-check summary{cursor:pointer;color:var(--ktg-accent);font-weight:500;padding:8px 0}
+.ng-check ul{list-style:none;padding:0;margin:4px 0 12px}
+.ng-check li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--ktg-border);font-size:14px;line-height:18px}
+.ng-check li small{display:block;color:var(--ktg-text-2)}
+.ng-check li b{white-space:nowrap;font-weight:500}
+.ng-kit .ktg-btn{width:100%;margin-top:12px}
+
+/* всё в одном окне */
+.ng-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 16px}
+.ng-tabs button{padding:10px 16px;border-radius:99px;background:var(--ktg-card);font:500 15px/20px var(--ktg-font);color:var(--ktg-ink);cursor:pointer;border:0}
+.ng-tabs button.is-on{background:var(--ktg-ink);color:#fff}
+.ng-card{min-width:0;display:flex;flex-direction:column;background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
+.ng-card>a{display:block;color:inherit;text-decoration:none}
+.ng-card img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.ng-card__name{display:block;padding:12px 14px 4px;font-size:15px;line-height:20px;overflow-wrap:anywhere}
+.ng-card__foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:auto;padding:8px 14px 14px}
+.ng-card__foot b{white-space:nowrap;color:var(--ktg-ink)}
+.ng-card__foot button{padding:8px 12px;border:0;border-radius:10px;background:var(--ktg-accent-tint);color:var(--ktg-accent);font:500 14px/18px var(--ktg-font);cursor:pointer}
+.ng-card__foot button.is-on{background:var(--ktg-accent);color:#fff}
+.ng-cart b{margin-left:8px}
+
+.ng-atrium{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
+.ng-atrium>img{width:100%;height:360px;object-fit:cover}
+.ng-atrium>div{padding:24px 32px 24px 0}
+.ng-atrium .ktg-lead{margin-bottom:20px}
+.ng-preview,.ng-chosen{margin-top:10px;font-weight:500}
+
+@media (hover:none),(max-width:900px){
+  .ng-hint__mouse,.ng-hint__wheel{display:none}
+  .ng-hint__touch{display:inline}
+}
+@media (max-height:760px) and (min-width:901px){
+  .ng-hero__text .ktg-facts{display:none}
+}
+@media (max-width:900px){
+  /* на телефоне текст уезжает как обычно, закрепляется только ёлка */
+  .ng-hero{height:auto}
+  .ng-hero__pin{position:static}
+  .ng-hero__grid{display:block;height:auto}
+  .ng-hero__text{padding:24px 20px}
+  .ng-track{height:230vh;margin-top:12px}
+  .ng-tree{position:sticky;top:calc(var(--ng-top) + 8px);height:min(125vw,calc(100svh - var(--ng-top) - 24px))}
+  .ng-hint{font-size:13px;padding:8px 14px;border-radius:14px}
+  .ng-gift>span{display:none}
+  .ng-kits{grid-template-columns:minmax(0,1fr)}
+  .ng-kit__head{min-height:0}
+  .ng-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .ng-tabs button{flex:none}
+  .ng-atrium{grid-template-columns:minmax(0,1fr);gap:0}
+  .ng-atrium>img{height:220px}
+  .ng-atrium>div{padding:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  .ng-hero,.ng-track{height:auto}
+  .ng-hero__pin{position:static}
+  .ng-tree{position:relative;height:min(520px,80vh)}
+  .ng-hint__wheel path{animation:none}
+}
