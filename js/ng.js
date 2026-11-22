@@ -1,10 +1,9 @@
-/* НГ-лендинг: ёлка от колеса над рамкой, вкладки с карточками, подборка. */
+/* НГ-лендинг: ёлка от колеса над рамкой. */
 (function () {
   'use strict';
   var root = document.getElementById('ktg');
   var $ = function (s) { return root.querySelector(s); };
   var $$ = function (s) { return [].slice.call(root.querySelectorAll(s)); };
-  var money = function (n) { return n.toLocaleString('ru-RU') + ' ₽'; };
   var clamp = function (x, a, b) { return Math.min(1, Math.max(0, (x - a) / (b - a))); };
   var smooth = function (t) { return t * t * (3 - 2 * t); };
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -126,96 +125,5 @@
     el.addEventListener('click', function () {
       $$('.ng-kit').forEach(function (k) { k.classList.toggle('is-on', '#' + k.id === el.getAttribute('href')); });
     });
-  });
-
-  /* ---------- вкладки ---------- */
-  var DATA = window.KTG_DATA, byId = {}, cur = DATA[0], shown = 12, picks = [];
-  DATA.forEach(function (group) { group.items.forEach(function (it) { byId[it.id] = it; }); });
-  var tabs = $('[data-tabs]'), grid = $('[data-grid]'), more = $('[data-more]'), chosen = $('[data-chosen]'), kit = '';
-
-  function el(tag, cls, text) {
-    var e = document.createElement(tag);
-    if (cls) e.className = cls;
-    if (text !== undefined) e.textContent = text;
-    return e;
-  }
-
-  DATA.forEach(function (group) {
-    var b = el('button', '', group.name);
-    b.type = 'button';
-    b.dataset.group = group.slug;
-    tabs.appendChild(b);
-  });
-
-  function render() {
-    grid.textContent = '';
-    cur.items.slice(0, shown).forEach(function (it) {
-      var card = el('article', 'ng-card'), link = el('a'), img = el('img'), foot = el('div', 'ng-card__foot');
-      link.href = it.u;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      img.src = it.i;
-      img.alt = '';
-      img.loading = 'lazy';
-      link.append(img, el('span', 'ng-card__name', it.n));
-      var on = picks.indexOf(it.id) !== -1, add = el('button', on ? 'is-on' : '', on ? 'В подборке' : 'В подборку');
-      add.type = 'button';
-      add.dataset.id = it.id;
-      foot.append(el('b', '', it.p), add);
-      card.append(link, foot);
-      grid.appendChild(card);
-    });
-    more.hidden = shown >= cur.items.length;
-    $('[data-catlink]').href = cur.url;
-    [].forEach.call(tabs.children, function (b) { b.classList.toggle('is-on', b.dataset.group === cur.slug); });
-    document.dispatchEvent(new CustomEvent('ktg:group', { detail: cur.slug }));
-  }
-
-  function go(slug, scroll) {
-    var next = DATA.filter(function (group) { return group.slug === slug; })[0];
-    if (!next) return;
-    cur = next;
-    shown = 12;
-    render();
-    if (scroll) document.getElementById('menu').scrollIntoView();
-  }
-
-  function summary() {
-    var sum = picks.reduce(function (total, id) { return total + byId[id].v; }, 0);
-    $('[data-cart-n]').textContent = picks.length;
-    $('[data-cart-sum]').textContent = sum ? 'от ' + money(sum) : '';
-    $('[data-cart]').classList.toggle('is-shown', picks.length > 0);
-    var parts = [];
-    if (kit) parts.push('Комплект «' + kit + '»');
-    if (picks.length) parts.push('Подборка: ' + picks.map(function (id) { return byId[id].n; }).join(', ') + ' — от ' + money(sum));
-    chosen.textContent = parts.join('. ');
-    chosen.hidden = !parts.length;
-  }
-
-  tabs.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-group]');
-    if (b) go(b.dataset.group);
-  });
-  document.addEventListener('ktg:go', function (e) { go(e.detail, true); });
-  more.addEventListener('click', function () { shown += 12; render(); });
-  grid.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-id]');
-    if (!b) return;
-    var id = +b.dataset.id, at = picks.indexOf(id);
-    if (at === -1) picks.push(id); else picks.splice(at, 1);
-    b.classList.toggle('is-on', at === -1);
-    b.textContent = at === -1 ? 'В подборке' : 'В подборку';
-    summary();
-  });
-  $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.go, true); }); });
-  $$('[data-kit]').forEach(function (b) { b.addEventListener('click', function () { kit = b.dataset.kit; summary(); }); });
-  $('[data-cart]').addEventListener('click', function () { document.getElementById('zayavka').scrollIntoView(); });
-  render();
-  summary();
-
-  /* ---------- форма: превью заявки не отправляет ---------- */
-  $('[data-form]').addEventListener('submit', function (e) {
-    e.preventDefault();
-    $('[data-preview]').hidden = false;
   });
 })();

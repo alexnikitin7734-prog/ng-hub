@@ -45,15 +45,17 @@
 .ng-kits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ktg-gap);align-items:start;margin-top:24px}
 .ng-kit{background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
 .ng-kit.is-on{outline:2px solid var(--ktg-accent)}
-.ng-kit__head{position:relative;padding:28px 24px 20px;min-height:216px;background:var(--ng-night);color:#f3ead8;display:flex;flex-direction:column;align-items:flex-start}
-.ng-kit__head img{width:88px;height:88px;object-fit:contain;margin-bottom:12px}
-.ng-kit__head h3{font-size:22px;line-height:28px;color:var(--ng-gold);margin-bottom:6px}
+.ng-kit__head{position:relative;padding:28px 24px 20px;min-height:216px;background:#F7E7E1;color:var(--ktg-ink);display:flex;flex-direction:column;align-items:flex-start}
+.ng-kit__head img{width:104px;height:104px;object-fit:contain;margin-bottom:8px;filter:brightness(2.3) saturate(1.15)}
+#k2 .ng-kit__head{background:#F5E9CC}
+#k3 .ng-kit__head{background:#E3E7F3}
+.ng-kit__head h3{font-size:22px;line-height:28px;color:var(--ktg-ink);margin-bottom:6px}
 .ng-kit__head p{font-size:14px;line-height:20px;opacity:.78}
 .ng-kit__body{padding:20px 24px 24px}
 .ng-kit__price{font-size:24px;line-height:30px;font-weight:600;color:var(--ktg-ink)}
 .ng-kit__price small{display:block;font-size:14px;font-weight:400;color:var(--ktg-text-2)}
 .ng-shots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:16px 0}
-.ng-shots img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.ng-shots img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
 .ng-check summary{cursor:pointer;color:var(--ktg-accent);font-weight:500;padding:8px 0}
 .ng-check ul{list-style:none;padding:0;margin:4px 0 12px}
 .ng-check li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--ktg-border);font-size:14px;line-height:18px}
@@ -66,19 +68,21 @@
 .ng-tabs button{padding:10px 16px;border-radius:99px;background:var(--ktg-card);font:500 15px/20px var(--ktg-font);color:var(--ktg-ink);cursor:pointer;border:0}
 .ng-tabs button.is-on{background:var(--ktg-ink);color:#fff}
 .ng-card{min-width:0;display:flex;flex-direction:column;background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
-.ng-card>a{display:block;color:inherit;text-decoration:none}
+.ng-card__view{display:block;width:100%;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}
 .ng-card img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
 .ng-card__name{display:block;padding:12px 14px 4px;font-size:15px;line-height:20px;overflow-wrap:anywhere}
 .ng-card__foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:auto;padding:8px 14px 14px}
 .ng-card__foot b{white-space:nowrap;color:var(--ktg-ink)}
-.ng-card__foot button{padding:8px 12px;border:0;border-radius:10px;background:var(--ktg-accent-tint);color:var(--ktg-accent);font:500 14px/18px var(--ktg-font);cursor:pointer}
-.ng-card__foot button.is-on{background:var(--ktg-accent);color:#fff}
+.ng-card__foot>button{padding:8px 12px;border:0;border-radius:10px;background:var(--ktg-accent-tint);color:var(--ktg-accent);font:500 14px/18px var(--ktg-font);cursor:pointer}
+.ng-card__foot>button.is-on{background:var(--ktg-accent);color:#fff}
 .ng-cart b{margin-left:8px}
 
-.ng-atrium{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;background:var(--ktg-card);border-radius:var(--ktg-r-lg);overflow:hidden}
-.ng-atrium>img{width:100%;height:360px;object-fit:cover}
-.ng-atrium>div{padding:24px 32px 24px 0}
-.ng-atrium .ktg-lead{margin-bottom:20px}
+.ng-shots button,.ng-check li button{padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ng-check li button:hover{color:var(--ktg-accent)}
+.ng-seg{flex-wrap:wrap}
+.ng-unpick{margin-left:6px;padding:0 4px;border:0;background:none;color:inherit;opacity:.6;font:inherit;cursor:pointer}
+.ktg-sum__row>span{min-width:0;overflow-wrap:anywhere}
+.ktg-sum__row>b{white-space:nowrap}
 .ng-preview,.ng-chosen{margin-top:10px;font-weight:500}
 
 @media (hover:none){
@@ -100,9 +104,6 @@
   .ng-kit__head{min-height:0}
   .ng-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
   .ng-tabs button{flex:none}
-  .ng-atrium{grid-template-columns:minmax(0,1fr);gap:0}
-  .ng-atrium>img{height:220px}
-  .ng-atrium>div{padding:20px}
 }
 @media (prefers-reduced-motion:reduce){
   .ng-hint__wheel path{animation:none}
