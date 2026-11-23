@@ -90,6 +90,12 @@
     return out;
   }
 
+  // Обложки квизов и тимбилдингов — на тёмном размытом фоне из самой картинки (Маша, т.21 №587)
+  var COVER = {};
+  window.KTG_DATA.forEach(function (g) {
+    if (g.slug === 'kviz' || g.slug === 'timbilding') g.items.forEach(function (it) { if (it.i.indexOf('img/ava/')) COVER[it.id] = 1; });
+  });
+
   function renderGrid() {
     grid.textContent = '';
     found = pickList();
@@ -101,7 +107,12 @@
       img.src = it.i;
       img.alt = '';
       img.loading = 'lazy';
-      view.append(img, el('span', 'ng-card__name', it.n));
+      if (COVER[it.id]) {
+        var cover = el('span', 'ng-cover');
+        cover.style.setProperty('--cover', 'url(' + it.i + ')');
+        cover.appendChild(img);
+        view.append(cover, el('span', 'ng-card__name', it.n));
+      } else view.append(img, el('span', 'ng-card__name', it.n));
       var sets = setsList(it);
       var add = el('button');
       add.type = 'button';
