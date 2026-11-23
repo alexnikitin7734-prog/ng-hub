@@ -140,7 +140,7 @@
 .ng-sets li{display:flex;justify-content:space-between;gap:8px;padding:2px 0;font-size:12px;line-height:16px;color:var(--ktg-text-2)}
 .ng-sets li>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ng-sets li>b{flex:none;font-weight:500;color:var(--ktg-ink);white-space:nowrap}
-.ng-root [data-qv-opts]{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.ng-root [data-qv-opts]{display:flex;flex-direction:column;gap:6px;margin:12px 0;border:0;border-radius:0}
 .ng-root [data-qv-opts]:empty{display:none}
 @media (min-width:901px){.ng-root [data-qv-opts]{max-height:min(340px,38vh);overflow-y:auto;scrollbar-width:thin}}
 .ng-opt{flex:none;display:flex;align-items:center;gap:10px;width:100%;padding:6px 10px 6px 6px;border:1px solid var(--ktg-border);border-radius:12px;background:none;color:var(--ktg-ink);font:inherit;text-align:left}

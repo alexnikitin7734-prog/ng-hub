@@ -1,8 +1,8 @@
 /* Конструктор праздника (№551, №562) */
 .kz-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0 16px}
-.kz-preset{display:flex;align-items:center;gap:12px;min-width:0;padding:8px;border:2px solid transparent;border-radius:20px;background:var(--ktg-card);color:var(--ktg-ink);text-align:left;cursor:pointer}
-.kz-preset img{flex:none;width:104px;aspect-ratio:4/3;border-radius:13px;object-fit:cover}
-.kz-preset b{font:500 18px/22px var(--ktg-head)}
+.kz-preset{display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:0;padding:8px;border:2px solid transparent;border-radius:20px;background:var(--ktg-card);color:var(--ktg-ink);text-align:left;cursor:pointer}
+.kz-preset img{flex:none;width:100%;aspect-ratio:4/3;border-radius:13px;object-fit:cover}
+.kz-preset b{padding:0 6px 6px;font:500 18px/22px var(--ktg-head);text-align:center}
 .kz-preset.is-on{border-color:var(--ktg-accent);background:var(--ktg-accent-tint)}
 
 .kz{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:var(--ktg-gap);align-items:start}
@@ -54,8 +54,6 @@
 @media (max-width:1199px){
   .kz{grid-template-columns:minmax(0,1fr) 320px}
   .kz-groups{grid-template-columns:minmax(0,1fr)}
-  .kz-preset{flex-direction:column;text-align:center}
-  .kz-preset img{width:100%}
 }
 @media (max-width:900px){
   .kz-presets{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
