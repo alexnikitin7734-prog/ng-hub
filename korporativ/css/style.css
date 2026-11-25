@@ -2,6 +2,8 @@
 @font-face{font-family:"Inter";font-style:normal;font-weight:400 600;font-display:swap;src:url(../fonts/inter-latin-ext.woff2) format("woff2")}
 @font-face{font-family:"Comfortaa";font-style:normal;font-weight:500 700;font-display:swap;src:url(../fonts/comfortaa-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 @font-face{font-family:"Comfortaa";font-style:normal;font-weight:500 700;font-display:swap;src:url(../fonts/comfortaa-latin.woff2) format("woff2")}
+@font-face{font-family:"Klodova Antikva";font-style:normal;font-weight:100 900;font-display:swap;src:url(../fonts/klodova-regular.woff2) format("woff2")}
+@font-face{font-family:"Klodova Antikva";font-style:italic;font-weight:100 900;font-display:swap;src:url(../fonts/klodova-italic.woff2) format("woff2")}
 :root{
   --accent:#FE5D26;--accent-h:#D95427;--tint:#FFEFEA;--ink:#312D2B;--tx:#272F3D;--mut:rgba(49,45,43,.6);
   --page:#F6F6F6;--card:#fff;--sunk:rgba(49,45,43,.05);--line:rgba(49,45,43,.1);
@@ -196,3 +198,5 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
   .modal__go{flex:1 1 100%}
   .inc{grid-template-columns:1fr}
 }
+.klod{--head:"Klodova Antikva",Georgia,serif}
+.klod .hero h1,.klod .h2,.klod .card__name,.klod .modal__title{letter-spacing:0;font-size-adjust:.5}
