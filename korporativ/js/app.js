@@ -27,13 +27,13 @@
   var grid = $('#grid');
   grid.innerHTML = T.map(function (t) {
     return '<article class="card" data-slug="' + t.slug + '" tabindex="0" aria-label="' + esc(t.name) + '">' +
-      '<span class="tic">' + ic('t-' + t.slug) + '</span>' +
+      '<img class="card__img" src="img/temy/' + t.slug + '.webp' + V + '" alt="" width="640" height="480" loading="lazy">' +
       '<h3 class="card__name">' + esc(t.name) + '</h3>' +
       '<p class="card__mood">' + esc(t.mood) + '</p>' +
       '<dl class="card__price"><div><dt>30 гостей</dt><dd>от ' + money(t.total[0]) + '</dd></div><div><dt>50 гостей</dt><dd>от ' + money(t.total[1]) + '</dd></div></dl>' +
       '<div class="card__row"><button class="btn btn--primary btn--sm card__open" type="button">' + ic('i-play') + 'Программа и видео</button></div></article>';
   }).join('') +
-    '<article class="card card--own"><span class="tic">' + ic('t-svoya') + '</span><h3 class="card__name">Своя тема</h3>' +
+    '<article class="card card--own"><img class="card__img" src="img/temy/svoya.webp' + V + '" alt="" width="640" height="480" loading="lazy"><h3 class="card__name">Своя тема</h3>' +
     '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p>' +
     '<div class="card__row"><a class="btn btn--light btn--sm" href="#zayavka">Обсудить</a></div></article>';
   var cards = $$('.card[data-slug]', grid);
@@ -91,7 +91,7 @@
     cur = slug;
     $('.modal__title', modal).textContent = t.name;
     $('.modal__mood', modal).textContent = t.mood;
-    $('.modal__top use', modal).setAttribute('href', '#t-' + slug);
+    $('.modal__img', modal).src = 'img/temy/' + slug + '.webp' + V;
     mv.poster = 'video/' + slug + '-big.jpg' + V;
     mv.src = 'video/' + slug + '-big.mp4' + V;
     paintSum();
