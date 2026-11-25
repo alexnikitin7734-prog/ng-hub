@@ -199,4 +199,8 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
   .inc{grid-template-columns:1fr}
 }
 :root.klod{--head:"Klodova Antikva",Georgia,serif}
-.klod .hero h1,.klod .h2,.klod .card__name,.klod .modal__title{letter-spacing:0;font-size-adjust:.5}
+.klod .hero h1{font-size:clamp(46px,4.6vw,68px);letter-spacing:0;line-height:1.02}
+.klod .h2{font-size:clamp(36px,3.4vw,52px);letter-spacing:0}
+.klod .card__name{font-size:31px;letter-spacing:0}
+.klod .modal__title{font-size:40px;letter-spacing:0}
+.klod .steps b,.klod .modal__h{font-size:1.25em}
