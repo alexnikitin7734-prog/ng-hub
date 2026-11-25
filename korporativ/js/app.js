@@ -21,7 +21,7 @@
   }).join('');
   grid.innerHTML = T.map(function (t) {
     return '<article class="card" data-slug="' + t.slug + '" style="--c:' + t.color + '" tabindex="0" aria-label="' + esc(t.name) + '">' +
-      '<video muted loop playsinline preload="none" poster="video/' + t.slug + '-poster.jpg" src="video/' + t.slug + '-card.mp4"></video>' +
+      '<video muted loop playsinline preload="none" poster="video/' + t.slug + '-poster.jpg?v=2" src="video/' + t.slug + '-card.mp4?v=2"></video>' +
       '<div class="card__body"><h3 class="card__name">' + dot(t.color) + esc(t.name) + '</h3>' +
       '<p class="card__mood">' + esc(t.mood) + '</p>' +
       '<div class="card__row"><span class="price"><span class="price__from">от</span> <span class="stub stub--in">[цена]</span> ₽</span>' +
@@ -72,8 +72,8 @@
     $('.modal__title', modal).innerHTML = esc(t.name);
     $('.modal__mood', modal).textContent = t.mood;
     $('.modal__box', modal).style.setProperty('--c', t.color);
-    mv.poster = 'video/' + slug + '-big.jpg';
-    mv.src = 'video/' + slug + '-big.mp4';
+    mv.poster = 'video/' + slug + '-big.jpg?v=2';
+    mv.src = 'video/' + slug + '-big.mp4?v=2';
     $('.inc', modal).innerHTML = t.groups.map(function (g) {
       return '<div class="inc__g"><p class="inc__t">' + esc(g.title) + '</p>' + g.items.map(function (i) {
         return '<a class="inc__i" href="' + esc(i.u) + '" target="_blank" rel="noopener">' +
