@@ -75,12 +75,13 @@
   function paintSum() {
     var t = bySlug[cur];
     $$('.seg__g', modal).forEach(function (b) { var on = +b.dataset.g === gi; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
-    $('.modal__sum', modal).innerHTML = '<small>итого</small> от ' + money(t.total[gi]);
+    $('.modal__sum', modal).textContent = 'от ' + money(t.total[gi]);
+    $('.modal__per', modal).textContent = '≈ ' + money(Math.round(t.total[gi] / [30, 50][gi] / 100) * 100);
     $('.inc', modal).innerHTML = t.groups.map(function (g) {
       return '<div class="inc__g"><p class="inc__t">' + esc(g.title) + '</p>' + g.items.map(function (i) {
+        var q = /×|мин/.test(i.q[gi]) ? '<small>' + esc(i.q[gi]) + '</small>' : '';
         return '<a class="inc__i" href="' + esc(i.u) + '" target="_blank" rel="noopener">' +
-          (i.img ? '<img src="' + esc(i.img) + '" alt="" loading="lazy" width="44" height="44">' : '<span class="inc__ph"></span>') +
-          '<span class="inc__n">' + esc(i.n) + '<small>' + esc(i.q[gi]) + '</small></span>' +
+          '<span class="inc__n">' + esc(i.n) + q + '</span><i class="inc__d"></i>' +
           '<b class="inc__p">' + money(i.s[gi]) + '</b></a>';
       }).join('') + '</div>';
     }).join('');
@@ -91,6 +92,8 @@
     cur = slug;
     $('.modal__title', modal).textContent = t.name;
     $('.modal__mood', modal).textContent = t.mood;
+    $('.chek__name', modal).textContent = t.name;
+    modal.dataset.t = slug;
     $('.modal__img', modal).src = 'img/temy/' + slug + '.webp' + V;
     mv.poster = 'video/' + slug + '-big.jpg' + V;
     mv.src = 'video/' + slug + '-big.mp4' + V;
@@ -100,11 +103,13 @@
     if (!modal.open) modal.showModal();
     modal.scrollTop = 0;
     $('.modal__box', modal).scrollTop = 0;
+    $('.chek__scroll', modal).scrollTop = 0;
     heroPlay();
     var p = mv.play(); if (p && p.catch) p.catch(function () {});
+    window.FX.start(modal, slug);
   }
   function closeModal() { modal.close(); }
-  modal.addEventListener('close', function () { mv.pause(); mv.removeAttribute('src'); mv.load(); heroPlay(); });
+  modal.addEventListener('close', function () { window.FX.stop(); mv.pause(); mv.removeAttribute('src'); mv.load(); heroPlay(); });
   $('.modal__x', modal).addEventListener('click', closeModal);
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 

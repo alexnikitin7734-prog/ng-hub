@@ -9,7 +9,8 @@
 <link rel="stylesheet" href="site/base-2025.css">
 <link rel="stylesheet" href="site/header-2025.css">
 <link rel="stylesheet" href="site/hdr26.css">
-<link rel="stylesheet" href="css/style.css?v=9">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap">
+<link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1129,34 +1130,51 @@
 <dialog class="modal" id="modal" aria-labelledby="m-title">
   <div class="modal__box">
     <button class="modal__x" type="button" aria-label="Закрыть"><svg class="ic"><use href="#i-x"/></svg></button>
-    <div class="modal__media"><video muted loop playsinline preload="none"></video></div>
-    <div class="modal__body">
-      <div class="modal__top">
-        <img class="modal__img" src="img/temy/getsbi.webp?v=3" alt="" width="640" height="480">
-        <div>
-          <h3 class="modal__title" id="m-title"></h3>
-          <p class="modal__mood"></p>
-          <p class="modal__where"><svg class="ic"><use href="#i-pin"/></svg><span data-for="atrium">В зале «Атриум»</span><span data-for="vam" hidden>На вашей площадке — привезём и смонтируем</span></p>
+    <div class="modal__stage">
+      <p class="modal__kick">Новогодний корпоратив · тема</p>
+      <h3 class="modal__title" id="m-title"></h3>
+      <p class="modal__mood"></p>
+      <div class="modal__media"><video muted loop playsinline preload="none"></video></div>
+    </div>
+    <div class="modal__side">
+      <div class="chek">
+        <div class="chek__head">
+          <div class="chek__theme">
+            <img class="modal__img" src="img/temy/getsbi.webp?v=3" alt="" width="640" height="480">
+            <p><b>АРЕНДА ПЛЮС</b>Новый год под ключ</p>
+          </div>
+          <p class="chek__title">ПРЕДВАРИТЕЛЬНЫЙ ЧЕК</p>
+          <dl class="chek__dl">
+            <dt>Тема</dt><dd class="chek__name"></dd>
+            <dt>Где</dt><dd><span data-for="atrium">зал «Атриум»</span><span data-for="vam" hidden>ваша площадка</span></dd>
+            <dt>Гостей</dt>
+            <dd><div class="seg seg--g" role="tablist" aria-label="Гостей">
+              <button type="button" class="seg__g is-on" role="tab" aria-selected="true" data-g="0">30</button>
+              <button type="button" class="seg__g" role="tab" aria-selected="false" data-g="1">50</button>
+            </div></dd>
+          </dl>
+        </div>
+        <div class="chek__scroll">
+          <div class="inc"></div>
+          <p class="chek__note">Цены «от» по каталогу. Доставка, монтаж, зал, мебель и посуда — в точной смете.</p>
+          <p class="chek__bye">СПАСИБО · С НАСТУПАЮЩИМ</p>
+        </div>
+        <div class="chek__foot">
+          <p class="chek__sum"><span>ИТОГО</span><b class="modal__sum"></b></p>
+          <p class="chek__per"><span>На гостя</span><b class="modal__per"></b></p>
+          <a class="btn btn--primary modal__go" href="#zayavka">Хочу такой</a>
         </div>
       </div>
-      <div class="modal__buy">
-        <div class="seg seg--g" role="tablist" aria-label="Гостей">
-          <button type="button" class="seg__g is-on" role="tab" aria-selected="true" data-g="0">30 гостей</button>
-          <button type="button" class="seg__g" role="tab" aria-selected="false" data-g="1">50 гостей</button>
-        </div>
-        <span class="modal__sum"></span>
-        <a class="btn btn--primary modal__go" href="#zayavka">Хочу такой</a>
-      </div>
-      <h4 class="modal__h">Что входит</h4>
-      <div class="inc"></div>
     </div>
   </div>
+  <canvas class="modal__fx" aria-hidden="true"></canvas>
 </dialog>
 
 <script src="site/jquery.js"></script>
 <script src="site/hdr26.js"></script>
 <script src="site/header-2025.js"></script>
 <script src="js/themes.js?v=3"></script>
-<script src="js/app.js?v=4"></script>
+<script src="js/fx.js?v=1"></script>
+<script src="js/app.js?v=5"></script>
 </body>
 </html>
