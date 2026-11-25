@@ -1,54 +1,59 @@
 (function () {
   var T = window.THEMES;
+  var V = '?v=3';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var dot = function (c) { return '<svg class="tm__dot" viewBox="0 0 10 10" style="--c:' + c + '"><circle cx="5" cy="5" r="5" fill="' + c + '"/></svg>'; };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]; }); };
+  var money = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽'; };
+  var ic = function (id) { return '<svg class="ic"><use href="#' + id + '"/></svg>'; };
   var bySlug = {};
   T.forEach(function (t) { bySlug[t.slug] = t; });
 
+  var hv = $('.hero__media video');
   var mode = 'atrium';
   function setMode(m) {
     mode = m;
     $$('.seg__b').forEach(function (b) { var on = b.dataset.mode === m; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
     $$('[data-for]').forEach(function (el) { el.hidden = el.dataset.for !== m; });
+    heroPlay();
+  }
+  function heroPlay() {
+    if (mode === 'atrium' && !modal.open && heroSeen) { var p = hv.play(); if (p && p.catch) p.catch(function () {}); } else hv.pause();
   }
   $$('.seg__b').forEach(function (b) { b.addEventListener('click', function () { setMode(b.dataset.mode); }); });
+  var heroSeen = true;
+  new IntersectionObserver(function (es) { heroSeen = es[0].isIntersecting; heroPlay(); }).observe($('.hero__card'));
 
-  var menu = $('#tmenu'), grid = $('#grid');
-  menu.innerHTML = T.map(function (t) {
-    return '<button class="tm" type="button" data-slug="' + t.slug + '" style="--c:' + t.color + '">' + dot(t.color) + esc(t.name) + '</button>';
-  }).join('');
+  var grid = $('#grid');
   grid.innerHTML = T.map(function (t) {
-    return '<article class="card" data-slug="' + t.slug + '" style="--c:' + t.color + '" tabindex="0" aria-label="' + esc(t.name) + '">' +
-      '<video muted loop playsinline preload="none" poster="video/' + t.slug + '-poster.jpg?v=2" src="video/' + t.slug + '-card.mp4?v=2"></video>' +
-      '<div class="card__body"><h3 class="card__name">' + dot(t.color) + esc(t.name) + '</h3>' +
+    return '<article class="card" data-slug="' + t.slug + '" tabindex="0" aria-label="' + esc(t.name) + '">' +
+      '<span class="tic">' + ic('t-' + t.slug) + '</span>' +
+      '<h3 class="card__name">' + esc(t.name) + '</h3>' +
       '<p class="card__mood">' + esc(t.mood) + '</p>' +
-      '<div class="card__row"><span class="price"><span class="price__from">от</span> <span class="stub stub--in">[цена]</span> ₽</span>' +
-      '<button class="card__btn" type="button">Хочу такой</button></div></div></article>';
-  }).join('');
+      '<dl class="card__price"><div><dt>30 гостей</dt><dd>от ' + money(t.total[0]) + '</dd></div><div><dt>50 гостей</dt><dd>от ' + money(t.total[1]) + '</dd></div></dl>' +
+      '<div class="card__row"><button class="btn btn--primary btn--sm card__open" type="button">' + ic('i-play') + 'Программа и видео</button></div></article>';
+  }).join('') +
+    '<article class="card card--own"><span class="tic">' + ic('t-svoya') + '</span><h3 class="card__name">Своя тема</h3>' +
+    '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p>' +
+    '<div class="card__row"><a class="btn btn--light btn--sm" href="#zayavka">Обсудить</a></div></article>';
+  var cards = $$('.card[data-slug]', grid);
 
-  var cards = $$('.card', grid);
-  var vis = new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      var v = $('video', e.target);
-      if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause();
-    });
-  }, { rootMargin: '100px 0px' });
-  cards.forEach(function (c) { vis.observe(c); });
+  var hdr = document.getElementById('hdr26');
+  var row = hdr && hdr.querySelector('.hdr26__n .hdr26__c');
+  var links = document.createElement('div');
+  links.className = 'tnav';
+  links.innerHTML = '<a class="tnav__hol" href="https://arenda-attrakcionov.ru/attrakciony-na-novyj-god/">' + ic('i-gift') + 'Новый год</a>' +
+    T.map(function (t) { return '<button type="button" data-slug="' + t.slug + '">' + esc(t.name) + '</button>'; }).join('');
+  if (row) { row.classList.add('tnav-row'); row.insertBefore(links, row.firstChild); }
 
   var active = null;
-  function setActive(slug, scrollMenu) {
+  function setActive(slug) {
     if (active === slug) return;
     active = slug;
-    $$('.tm', menu).forEach(function (b) { b.classList.toggle('is-on', b.dataset.slug === slug); });
-    cards.forEach(function (c) { c.classList.toggle('is-on', c.dataset.slug === slug); });
-    if (!slug || scrollMenu === false) return;
-    var b = $('.tm[data-slug="' + slug + '"]', menu);
-    if (menu.scrollWidth > menu.clientWidth) {
-      var x = b.offsetLeft - (menu.clientWidth - b.offsetWidth) / 2;
-      menu.scrollTo({ left: Math.max(0, x), behavior: 'smooth' });
-    }
+    $$('button', links).forEach(function (b) { b.classList.toggle('is-on', b.dataset.slug === slug); });
+    if (!slug) return;
+    var b = $('button[data-slug="' + slug + '"]', links);
+    if (links.scrollWidth > links.clientWidth) links.scrollTo({ left: Math.max(0, b.offsetLeft - (links.clientWidth - b.offsetWidth) / 2), behavior: 'smooth' });
   }
   var ticking = false;
   function track() {
@@ -66,29 +71,40 @@
   }
   window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(track); } }, { passive: true });
 
-  var modal = $('#modal'), mv = $('video', modal);
-  function openTheme(slug) {
-    var t = bySlug[slug];
-    $('.modal__title', modal).innerHTML = esc(t.name);
-    $('.modal__mood', modal).textContent = t.mood;
-    $('.modal__box', modal).style.setProperty('--c', t.color);
-    mv.poster = 'video/' + slug + '-big.jpg?v=2';
-    mv.src = 'video/' + slug + '-big.mp4?v=2';
+  var modal = $('#modal'), mv = $('video', modal), cur = null, gi = 0;
+  function paintSum() {
+    var t = bySlug[cur];
+    $$('.seg__g', modal).forEach(function (b) { var on = +b.dataset.g === gi; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
+    $('.modal__sum', modal).innerHTML = '<small>итого</small> от ' + money(t.total[gi]);
     $('.inc', modal).innerHTML = t.groups.map(function (g) {
       return '<div class="inc__g"><p class="inc__t">' + esc(g.title) + '</p>' + g.items.map(function (i) {
         return '<a class="inc__i" href="' + esc(i.u) + '" target="_blank" rel="noopener">' +
-          (i.img ? '<img src="' + esc(i.img) + '" alt="" loading="lazy" width="36" height="36">' : '') +
-          '<span>' + esc(i.n) + '</span><svg class="ic"><use href="#i-out"/></svg></a>';
+          (i.img ? '<img src="' + esc(i.img) + '" alt="" loading="lazy" width="44" height="44">' : '<span class="inc__ph"></span>') +
+          '<span class="inc__n">' + esc(i.n) + '<small>' + esc(i.q[gi]) + '</small></span>' +
+          '<b class="inc__p">' + money(i.s[gi]) + '</b></a>';
       }).join('') + '</div>';
     }).join('');
+  }
+  $$('.seg__g', modal).forEach(function (b) { b.addEventListener('click', function () { gi = +b.dataset.g; paintSum(); }); });
+  function openTheme(slug) {
+    var t = bySlug[slug];
+    cur = slug;
+    $('.modal__title', modal).textContent = t.name;
+    $('.modal__mood', modal).textContent = t.mood;
+    $('.modal__top use', modal).setAttribute('href', '#t-' + slug);
+    mv.poster = 'video/' + slug + '-big.jpg' + V;
+    mv.src = 'video/' + slug + '-big.mp4' + V;
+    paintSum();
     $('.modal__go', modal).dataset.slug = slug;
     setActive(slug);
     if (!modal.open) modal.showModal();
     modal.scrollTop = 0;
+    $('.modal__box', modal).scrollTop = 0;
+    heroPlay();
     var p = mv.play(); if (p && p.catch) p.catch(function () {});
   }
   function closeModal() { modal.close(); }
-  modal.addEventListener('close', function () { mv.pause(); mv.removeAttribute('src'); mv.load(); });
+  modal.addEventListener('close', function () { mv.pause(); mv.removeAttribute('src'); mv.load(); heroPlay(); });
   $('.modal__x', modal).addEventListener('click', closeModal);
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
@@ -100,24 +116,23 @@
   $('.modal__go', modal).addEventListener('click', function (e) { e.preventDefault(); want(this.dataset.slug); });
 
   grid.addEventListener('click', function (e) {
-    var c = e.target.closest('.card'); if (!c) return;
-    if (e.target.closest('.card__btn')) { want(c.dataset.slug); return; }
+    var c = e.target.closest('.card[data-slug]'); if (!c) return;
     openTheme(c.dataset.slug);
   });
   grid.addEventListener('keydown', function (e) {
-    var c = e.target.closest('.card'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openTheme(c.dataset.slug); }
+    var c = e.target.closest('.card[data-slug]'); if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openTheme(c.dataset.slug); }
   });
-  menu.addEventListener('click', function (e) {
-    var b = e.target.closest('.tm'); if (!b) return;
+  links.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-slug]'); if (!b) return;
     var c = $('.card[data-slug="' + b.dataset.slug + '"]', grid);
-    var y = c.getBoundingClientRect().top + window.scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 64) - 72;
-    window.scrollTo({ top: y, behavior: 'instant' });
+    var top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
+    window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - top - 24, behavior: 'instant' });
     openTheme(b.dataset.slug);
   });
 
   var dd = $('#dd'), ddBtn = $('.dd__btn', dd), ddList = $('.dd__list', dd), hl = -1;
-  ddList.innerHTML = T.map(function (t) { return '<li role="option" data-slug="' + t.slug + '" aria-selected="false">' + dot(t.color) + esc(t.name) + '</li>'; }).join('') +
-    '<li role="option" data-slug="" aria-selected="false">Пока не знаем — посоветуйте</li>';
+  ddList.innerHTML = T.map(function (t) { return '<li role="option" data-slug="' + t.slug + '" aria-selected="false">' + ic('t-' + t.slug) + esc(t.name) + '</li>'; }).join('') +
+    '<li role="option" data-slug="" aria-selected="false">' + ic('t-svoya') + 'Пока не знаем — посоветуйте</li>';
   var opts = $$('li', ddList);
   function ddOpen(o) { ddList.hidden = !o; ddBtn.setAttribute('aria-expanded', o); if (o) { hl = Math.max(0, opts.findIndex(function (l) { return l.getAttribute('aria-selected') === 'true'; })); paint(); } }
   function paint() { opts.forEach(function (l, i) { l.classList.toggle('is-hl', i === hl); }); }
@@ -136,29 +151,6 @@
     else if (e.key === 'Escape') ddOpen(false);
   });
   document.addEventListener('click', function (e) { if (!dd.contains(e.target)) ddOpen(false); });
-
-  var cv = $('.hero__spark'), ctx = cv.getContext('2d'), dots = [], still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function size() {
-    var r = cv.getBoundingClientRect(), k = Math.min(window.devicePixelRatio || 1, 2);
-    cv.width = r.width * k; cv.height = r.height * k; ctx.setTransform(k, 0, 0, k, 0, 0);
-    var n = Math.round(r.width * r.height / 9000);
-    dots = [];
-    for (var i = 0; i < n; i++) dots.push({ x: Math.random() * r.width, y: Math.random() * r.height, r: Math.random() * 1.6 + .4, p: Math.random() * 6.28, s: Math.random() * .02 + .006, g: Math.random() < .7 });
-  }
-  function draw() {
-    var w = cv.width, h = cv.height; ctx.clearRect(0, 0, w, h);
-    dots.forEach(function (d) {
-      d.p += d.s; var a = (Math.sin(d.p) + 1) / 2;
-      ctx.globalAlpha = a * .9;
-      ctx.fillStyle = d.g ? '#f0d99a' : '#ffffff';
-      ctx.beginPath(); ctx.arc(d.x, d.y, d.r * (0.6 + a * .6), 0, 6.28); ctx.fill();
-      if (d.r > 1.6 && a > .8) { ctx.globalAlpha = (a - .8) * 3; ctx.fillRect(d.x - d.r * 4, d.y - .4, d.r * 8, .8); ctx.fillRect(d.x - .4, d.y - d.r * 4, .8, d.r * 8); }
-    });
-    ctx.globalAlpha = 1;
-    if (!still) requestAnimationFrame(draw);
-  }
-  size(); draw();
-  window.addEventListener('resize', size);
 
   setMode('atrium');
   track();
