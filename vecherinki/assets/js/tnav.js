@@ -1,6 +1,6 @@
 window.tnav = function (o) {
-  var I = [['Гэтсби', 'getsbi', 'getsbi'], ['Казино', 'kazino', 'kazino'], ['90-е', '90e', '90'], ['Хоррор', 'horror'], ['Русский стиль', 'russkiy-stil'],
-    ['Гавайи', 'gavayi'], ['Белая вечеринка', 'belaya'], ['Рок', 'rok'], ['Оскар', 'oscar'], ['Пираты', 'piraty'],
+  var I = [['Гэтсби', 'getsbi', 'getsbi'], ['Казино', 'kazino', 'kazino'], ['90-е', '90e', '90'], ['Русский стиль', 'russkiy-stil'],
+    ['Гавайи', 'gavayi'], ['Белая вечеринка', 'belaya'], ['Рок', 'rok'], ['Хоррор', 'horror'], ['Оскар', 'oscar'], ['Пираты', 'piraty'],
     ['Карнавал', 'maskarad', 'karnaval'], ['Стиляги', 'stilyagi'], ['СССР', 'sssr', 'sssr'], ['Дикий Запад', 'dikiy-zapad'], ['Чикаго', 'chicago'], ['Киберпанк', 'kiberpank', 'kiber'],
     ['80-е', '80e', '80'], ['Игра в кальмара', 'igra-v-kalmara'], ['Джеймс Бонд', 'bond'], ['Космос', 'kosmos'], ['Форт Боярд', 'fort-boyard'], ['Барби', 'barbi'], ['Дача', 'dacha'], ['Black tie', 'blacktie', 'blacktie']];
   var ic = function (id) { return '<svg class="ic"><use href="#' + id + '"/></svg>'; };
