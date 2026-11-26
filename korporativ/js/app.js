@@ -33,6 +33,36 @@
   }).join('') +
     '<a class="card card--own" href="#zayavka"><img class="card__img" src="img/temy/svoya.webp' + V + '" alt="" width="640" height="480" loading="lazy"><h3 class="card__name">Своя тема</h3>' +
     '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p></a>';
+  var X = [['sssr', 'СССР', 'Вымпелы, пломбир и&nbsp;хиты «Голубого огонька»'], ['halloween', 'Хэллоуин', 'Тыквы, свечи и&nbsp;костюмы пострашнее'],
+    ['white', 'Белая вечеринка', 'Всё в&nbsp;белом: цветы, свечи и&nbsp;лёгкий шик'], ['squid', 'Игра в&nbsp;кальмара', 'Розовые маски, испытания и&nbsp;азарт до&nbsp;финала'],
+    ['gavaii', 'Гавайи', 'Леи, укулеле и&nbsp;коктейли в&nbsp;кокосах'], ['oscar', 'Оскар', 'Красная дорожка, статуэтки и&nbsp;свои номинации'],
+    ['chicago', 'Чикаго 30-х', 'Сухой закон, джаз и&nbsp;шляпы федора'], ['zapad', 'Дикий Запад', 'Салун, ковбойские шляпы и&nbsp;звезда шерифа'],
+    ['piraty', 'Пираты', 'Треуголки, карта и&nbsp;сундук с&nbsp;сокровищами'], ['dacha', 'Дача', 'Самовар, яблоки и&nbsp;гирлянды в&nbsp;саду'],
+    ['stilyagi', 'Стиляги', 'Буги-вуги, коки и&nbsp;платья в&nbsp;горох'], ['rock', 'Рок', 'Электрогитары, кожа и&nbsp;живой драйв'],
+    ['cosmos', 'Космос', 'Ракеты, звёзды и&nbsp;вечер на&nbsp;орбите'], ['barbie', 'Барби', 'Всё розовое, блёстки и&nbsp;каблуки'],
+    ['bond', 'Джеймс Бонд', 'Смокинги, мартини и&nbsp;шпионские игры'], ['fort', 'Форт Боярд', 'Ключи, испытания и&nbsp;сундук с&nbsp;призом'],
+    ['russian', 'Русский стиль', 'Самовар, хохлома и&nbsp;гармонь']];
+  var XN = 6;
+  var nm = function (x) { return x[1].replace(/&nbsp;/g, ' '); };
+  $('.card--own', grid).insertAdjacentHTML('beforebegin', X.map(function (x) {
+    return '<a class="card card--x" href="#zayavka" data-x="' + x[0] + '" data-tema="' + esc(nm(x)) + '" hidden>' +
+      '<img class="card__img" src="img/temy/' + x[0] + '.webp' + V + '" alt="" width="640" height="480" loading="lazy">' +
+      '<h3 class="card__name">' + x[1] + '</h3><p class="card__mood">' + x[2] + '</p></a>';
+  }).join(''));
+  var xcards = $$('.card--x', grid), xmore = $('.temy__more');
+  xmore.innerHTML = '<span>Ещё ' + X.length + ' тематических вечеринок</span>' + ic('i-down');
+  function showAll(o) {
+    xcards.forEach(function (c) { c.hidden = !o; });
+    grid.classList.toggle('is-all', o);
+    xmore.setAttribute('aria-expanded', o);
+    xmore.firstChild.textContent = o ? 'Свернуть' : 'Ещё ' + X.length + ' тематических вечеринок';
+  }
+  xmore.addEventListener('click', function () { showAll(xmore.getAttribute('aria-expanded') !== 'true'); });
+  grid.addEventListener('click', function (e) {
+    var c = e.target.closest('.card--x'); if (!c) return;
+    pickName(c.dataset.tema);
+    setTimeout(function () { $('#zayavka input[name="name"]').focus({ preventScroll: true }); }, 600);
+  });
   var cards = $$('.card[data-slug]', grid);
 
   var hdr = document.getElementById('hdr26');
@@ -40,16 +70,17 @@
   var links = document.createElement('div');
   links.className = 'tnav';
   links.innerHTML = '<a class="tnav__hol" href="https://arenda-attrakcionov.ru/attrakciony-na-novyj-god/">' + ic('i-gift') + 'Новый год</a>' +
-    T.map(function (t) { return '<button type="button" data-slug="' + t.slug + '">' + esc(t.name) + '</button>'; }).join('');
+    T.map(function (t) { return '<button type="button" data-slug="' + t.slug + '">' + esc(t.name) + '</button>'; }).join('') +
+    X.slice(0, XN).map(function (x) { return '<button type="button" data-x="' + x[0] + '">' + x[1] + '</button>'; }).join('');
   if (row) { row.classList.add('tnav-row'); row.insertBefore(links, row.firstChild); }
 
   var active = null;
   function setActive(slug) {
     if (active === slug) return;
     active = slug;
-    $$('button', links).forEach(function (b) { b.classList.toggle('is-on', b.dataset.slug === slug); });
-    if (!slug) return;
-    var b = $('button[data-slug="' + slug + '"]', links);
+    $$('button', links).forEach(function (b) { b.classList.toggle('is-on', !!slug && (b.dataset.slug || b.dataset.x) === slug); });
+    var b = slug && $('button[data-slug="' + slug + '"], button[data-x="' + slug + '"]', links);
+    if (!b) return;
     if (links.scrollWidth > links.clientWidth) links.scrollTo({ left: Math.max(0, b.offsetLeft - (links.clientWidth - b.offsetWidth) / 2), behavior: 'smooth' });
   }
   var ticking = false;
@@ -59,10 +90,10 @@
     var g = grid.getBoundingClientRect(), vh = window.innerHeight, vw = window.innerWidth;
     if (g.bottom < vh * 0.3 || g.top > vh * 0.7) { setActive(null); return; }
     var cy = vh * 0.55, cx = vw / 2, best = null, bd = 1e9;
-    cards.forEach(function (c) {
+    cards.concat(xcards.filter(function (c) { return !c.hidden; })).forEach(function (c) {
       var r = c.getBoundingClientRect();
       var d = Math.abs(r.top + r.height / 2 - cy) * 3 + Math.abs(r.left + r.width / 2 - cx);
-      if (d < bd) { bd = d; best = c.dataset.slug; }
+      if (d < bd) { bd = d; best = c.dataset.slug || c.dataset.x; }
     });
     setActive(best);
   }
@@ -148,6 +179,17 @@
   grid.addEventListener('keydown', function (e) {
     var c = e.target.closest('.card[data-slug]'); if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openTheme(c.dataset.slug); }
   });
+  var hlT = 0;
+  links.addEventListener('click', function (e) {
+    var bx = e.target.closest('button[data-x]'); if (!bx) return;
+    showAll(true);
+    var c = $('.card--x[data-x="' + bx.dataset.x + '"]', grid);
+    var top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
+    window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - top - 24, behavior: 'instant' });
+    $$('.card.is-hl', grid).forEach(function (k) { k.classList.remove('is-hl'); });
+    c.classList.add('is-hl');
+    clearTimeout(hlT); hlT = setTimeout(function () { c.classList.remove('is-hl'); }, 2400);
+  });
   links.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-slug]'); if (!b) return;
     var c = $('.card[data-slug="' + b.dataset.slug + '"]', grid);
@@ -224,44 +266,6 @@
     else if (e.key === 'Escape') ddOpen(false);
   });
   document.addEventListener('click', function (e) { if (!dd.contains(e.target)) ddOpen(false); });
-
-  var VP = [['Гэтсби', 'getsbi'], ['Казино', 'kazino'], ['80-е', '80-e'], ['90-е', '90-e'], ['Маскарад', 'maskarad'], ['СССР', 'sssr'], ['Оскар', 'oscar'], ['Чикаго 30-х', 'chicago'],
-    ['Стиляги', 'stilyagi'], ['Рок', 'rock'], ['Белая вечеринка', 'white'], ['Игра в кальмара', 'squid'], ['Барби', 'barbie'], ['Джеймс Бонд', 'bond'], ['Форт Боярд', 'fort'], ['Пираты', 'piraty'],
-    ['Дикий Запад', 'zapad'], ['Гавайи', 'gavaii'], ['Дача', 'dacha'], ['Русский стиль', 'russian'], ['Киберпанк', 'cyberpunk'], ['Космос', 'cosmos'], ['Хэллоуин', 'halloween']];
-  var vtile = function (v) { return '<a class="vp__i" href="#zayavka" data-tema="' + esc(v[0]) + '"><img src="img/vecherinki/' + v[1] + '.webp?v=1" alt="" width="480" height="600" loading="lazy"><span>' + esc(v[0]) + '</span></a>'; };
-  var vb = document.createElement('button');
-  vb.type = 'button'; vb.className = 'tnav__vp'; vb.setAttribute('aria-expanded', 'false'); vb.setAttribute('aria-controls', 'vp');
-  vb.innerHTML = 'Вечеринки' + ic('i-down');
-  links.appendChild(vb);
-  var vp = document.createElement('div');
-  vp.className = 'vp'; vp.id = 'vp'; vp.hidden = true;
-  vp.innerHTML = '<div class="vp__head"><p class="vp__t">Тематические вечеринки</p><p class="vp__s">Соберём любую под ваш повод — выберите тему, и&nbsp;она встанет в&nbsp;заявку</p></div>' +
-    '<div class="vp__grid">' + VP.slice(0, 8).map(vtile).join('') + '</div>' +
-    '<div class="vp__grid vp__more" hidden>' + VP.slice(8).map(vtile).join('') + '</div>' +
-    '<button type="button" class="vp__btn" aria-expanded="false">Ещё темы' + ic('i-down') + '</button>';
-  document.body.appendChild(vp);
-  var vMore = $('.vp__more', vp), vMoreB = $('.vp__btn', vp), vTimer = 0, vHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-  function vpOpen(o) {
-    clearTimeout(vTimer);
-    if (o) { var r = vb.getBoundingClientRect(); vp.style.setProperty('--vp-top', Math.round(r.bottom + 8) + 'px'); vp.style.setProperty('--vp-left', Math.round(row.getBoundingClientRect().left) + 'px'); var bar = $('.hdr26-bar'), br = bar && bar.getBoundingClientRect(); vp.style.setProperty('--vp-bot', (br && br.height && br.top < window.innerHeight ? Math.round(window.innerHeight - br.top) : 0) + 'px'); }
-    vp.hidden = !o; vb.setAttribute('aria-expanded', o); vb.classList.toggle('is-open', o);
-  }
-  vb.addEventListener('click', function () { vpOpen(vHover || vp.hidden); });
-  vMoreB.addEventListener('click', function () { var o = vMore.hidden; vMore.hidden = !o; vMoreB.setAttribute('aria-expanded', o); vMoreB.firstChild.textContent = o ? 'Свернуть' : 'Ещё темы'; });
-  if (vHover) {
-    [vb, vp].forEach(function (el) {
-      el.addEventListener('mouseenter', function () { vpOpen(true); });
-      el.addEventListener('mouseleave', function () { vTimer = setTimeout(function () { vpOpen(false); }, 250); });
-    });
-  }
-  vp.addEventListener('click', function (e) {
-    var a = e.target.closest('.vp__i'); if (!a) return;
-    pickName(a.dataset.tema); vpOpen(false);
-    setTimeout(function () { $('#zayavka input[name="name"]').focus({ preventScroll: true }); }, 600);
-  });
-  document.addEventListener('click', function (e) { if (!vp.hidden && !vp.contains(e.target) && !vb.contains(e.target)) vpOpen(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !vp.hidden) { vpOpen(false); vb.focus(); } });
-  window.addEventListener('scroll', function () { if (!vp.hidden) vp.style.setProperty('--vp-top', Math.round(vb.getBoundingClientRect().bottom + 8) + 'px'); }, { passive: true });
 
   $$('.sl').forEach(function (sl) {
     var tr = $('.sl__track', sl), dots = $$('.sl__dots i', sl);
