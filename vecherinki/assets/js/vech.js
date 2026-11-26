@@ -82,28 +82,48 @@
   lb.addEventListener('touchstart', function (e) { tx = e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
   lb.addEventListener('touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 50) show(li + (dx < 0 ? 1 : -1)); }, { passive: true });
 
+  var ORDER = ['getsbi', 'kazino', '90e', '80e', 'maskarad', 'kiberpank', 'sssr', 'hellouin', 'belaya', 'igra-v-kalmara', 'gavayi', 'oscar', 'chicago', 'dikiy-zapad', 'piraty', 'dacha', 'stilyagi', 'rok', 'kosmos', 'barbi', 'bond', 'fort-boyard', 'russkiy-stil'];
+  var bySlug = {};
+  TEMY.forEach(function (t) { bySlug[t.slug] = t; });
+  var NAV = ORDER.filter(function (s) { return bySlug[s]; }).concat(TEMY.map(function (t) { return t.slug; }).filter(function (s) { return ORDER.indexOf(s) < 0; })).map(function (s) { return bySlug[s]; });
   var hdr = document.getElementById('hdr26');
   var row = hdr && hdr.querySelector('.hdr26__n .hdr26__c');
   var links = document.createElement('div');
   links.className = 'tnav';
   links.innerHTML = '<a class="tnav__hol" href="https://arenda-attrakcionov.ru/tematicheskie-vecherinki/">' + ic('i-spark') + 'Тематические вечеринки</a>' +
-    [['sostav', 'Что входит'], ['foto', 'Фото'], ['gde', 'Где'], ['faq', 'Вопросы'], ['zayavka', 'Заявка']].map(function (x) { return '<a class="tnav__a" href="#' + x[0] + '">' + x[1] + '</a>'; }).join('');
+    NAV.map(function (t) { return '<a class="tnav__a' + (t.slug === T.slug ? ' is-on' : '') + '" href="../' + t.slug + '/"' + (t.slug === T.slug ? ' aria-current="page"' : '') + '>' + esc(t.name) + '</a>'; }).join('');
   if (row) { row.classList.add('tnav-row'); row.insertBefore(links, row.firstChild); }
   var vb = document.createElement('button');
-  vb.type = 'button'; vb.className = 'tnav__vp'; vb.setAttribute('aria-expanded', 'false'); vb.setAttribute('aria-controls', 'vp');
-  vb.innerHTML = 'Другие темы' + ic('i-down');
+  vb.type = 'button'; vb.className = 'tnav__vp'; vb.setAttribute('aria-expanded', 'false'); vb.setAttribute('aria-controls', 'tmore');
+  vb.innerHTML = 'Ещё' + ic('i-down');
   links.appendChild(vb);
   var vp = document.createElement('div');
-  vp.className = 'vp'; vp.id = 'vp'; vp.hidden = true;
-  vp.innerHTML = '<div class="vp__head"><p class="vp__t">Другие темы</p><p class="vp__s">Каждую собираем под ключ — от&nbsp;20&nbsp;гостей</p></div>' +
-    '<div class="vp__grid">' + TEMY.filter(function (t) { return t.slug !== T.slug; }).map(function (t) {
-      return '<a class="vp__i" href="../' + t.slug + '/"><img src="../assets/img/vecherinki/' + t.img + '.webp" alt="" width="480" height="600" loading="lazy"><span>' + esc(t.name) + '</span></a>';
-    }).join('') + '</div>';
+  vp.className = 'tmore'; vp.id = 'tmore'; vp.hidden = true;
   document.body.appendChild(vp);
+  var tl = $$('.tnav__a', links);
+  var desk = window.matchMedia('(min-width: 769px)');
+  function fit() {
+    tl.forEach(function (a) { a.hidden = false; });
+    vb.hidden = true;
+    var over = [];
+    if (desk.matches && links.scrollWidth > links.clientWidth + 1) {
+      vb.hidden = false;
+      for (var k = tl.length - 1; k >= 0 && links.scrollWidth > links.clientWidth + 1; k--) { tl[k].hidden = true; over.unshift(tl[k]); }
+    }
+    vp.innerHTML = over.map(function (a) { return '<a class="tmore__a' + (a.classList.contains('is-on') ? ' is-on' : '') + '" href="' + a.getAttribute('href') + '">' + esc(a.textContent) + '</a>'; }).join('');
+    vb.classList.toggle('is-on', over.some(function (a) { return a.classList.contains('is-on'); }));
+    var cur = $('.tnav__a.is-on', links);
+    if (cur && !cur.hidden && links.scrollWidth > links.clientWidth) links.scrollLeft = Math.max(0, cur.offsetLeft - (links.clientWidth - cur.offsetWidth) / 2);
+  }
+  fit();
+  if (document.fonts) document.fonts.ready.then(fit);
+  window.addEventListener('load', fit);
+  var rt = 0;
+  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(fit, 120); });
   var vTimer = 0, vAt = 0;
   function vpOpen(o) {
     clearTimeout(vTimer);
-    if (o && row) { var r = vb.getBoundingClientRect(); vp.style.setProperty('--vp-top', Math.round(r.bottom + 8) + 'px'); vp.style.setProperty('--vp-left', Math.round(row.getBoundingClientRect().left) + 'px'); }
+    if (o) { var r = vb.getBoundingClientRect(); vp.style.setProperty('--vp-top', Math.round(r.bottom + 8) + 'px'); vp.style.setProperty('--vp-right', Math.round(window.innerWidth - r.right) + 'px'); }
     if (o && vp.hidden) vAt = Date.now();
     vp.hidden = !o; vb.setAttribute('aria-expanded', o); vb.classList.toggle('is-open', o);
   }
