@@ -191,7 +191,11 @@
       return render();
     }
     if (t.matches('[data-kz-preset],[data-kz-switch],[data-kz-step],[data-pick],[data-qv-pick]')) used = true;
-    if (t.matches('[data-kz-preset]')) choose(t.dataset.kzPreset);
+    if (t.matches('[data-kz-preset]')) {
+      choose(t.dataset.kzPreset);
+      var hdr = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
+      window.scrollTo({ top: $('.kz-main').getBoundingClientRect().top + window.scrollY - hdr - 16, behavior: 'smooth' });
+    }
     else if (t.matches('[data-kz-open]')) {
       t.setAttribute('aria-expanded', t.closest('.kz-group').classList.toggle('is-open'));
     } else if (t.matches('[data-kz-full]')) {

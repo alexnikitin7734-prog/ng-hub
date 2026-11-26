@@ -152,20 +152,18 @@
 
   /* ---------- окно карточки ---------- */
   function photo(url) {
-    var main = $('[data-qv-img]'), big = new Image();
-    main.src = url;
-    main.dataset.of = url;
-    big.onload = function () { if (main.dataset.of === url) main.src = big.src; };
-    big.src = url.replace('/images/generate/294_294_', '/images/upload/');
+    var main = $('[data-qv-img]');
+    main.onerror = function () { main.onerror = null; main.src = url; };
+    main.src = url.replace('/images/generate/294_294_', '/images/upload/');
   }
 
   function view(id) {
     var rec = byId[id];
     if (!rec) return;
-    var it = rec.it, photos = [it.i].concat(it.g || []).filter(function (u, n, a) { return a.indexOf(u) === n; }).slice(0, 5);
+    var it = rec.it, photos = (it.g && it.g.length ? it.g : [it.i]).filter(function (u, n, a) { return a.indexOf(u) === n; }).slice(0, 5);
     modal.dataset.id = id;
     at = list.indexOf(id);
-    photo(it.i);
+    photo(photos[0]);
     $('[data-qv-group]').textContent = rec.group;
     $('[data-qv-name]').textContent = it.n;
     $('[data-qv-price]').textContent = it.p + (it.pp ? ' на гостя' : '');
@@ -216,7 +214,13 @@
     } else if (t.matches('[data-qv-prev]')) step(-1);
     else if (t.matches('[data-qv-next]')) step(1);
     else if (t.matches('[data-close]')) close();
-    else if (t.matches('[data-group]')) go(t.dataset.group, !tabs.contains(t));
+    else if (t.matches('[data-group]')) {
+      go(t.dataset.group, !tabs.contains(t));
+      if (tabs.contains(t)) {
+        var hdr = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
+        window.scrollTo({ top: $('[data-count]').getBoundingClientRect().top + window.scrollY - hdr - 16, behavior: 'smooth' });
+      }
+    }
     else if (t.matches('[data-more]')) { shown += 12; renderGrid(); }
     else if (t.matches('[data-dd-btn]')) $('[data-dd]').classList.toggle('is-open');
     else if (t.matches('[data-sort]')) {

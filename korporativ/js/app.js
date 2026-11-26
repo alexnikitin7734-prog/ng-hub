@@ -69,7 +69,7 @@
     var p = PT[x[1]] || { total: [0, 0], groups: [], gal: [], c: [] };
     return { slug: slug, name: un(x[2]), mood: un(x[3]), total: p.total, groups: p.groups, c: p.c, gal: p.gal.map(function (g) { return '../vecherinki/' + x[1] + '/' + g; }), page: L + x[1] + '/' };
   }
-  var nav = window.tnav({ root: '../', here: 'hub', onTheme: goTheme });
+  window.tnav({ root: '../', here: 'hub', onTheme: goTheme });
   function goTheme(slug) {
     var c = $('.card[data-slug="' + slug + '"]', grid);
     var top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
@@ -77,29 +77,6 @@
     if (grid.scrollWidth > grid.clientWidth) grid.scrollLeft += c.getBoundingClientRect().left - grid.getBoundingClientRect().left - parseFloat(getComputedStyle(grid).scrollPaddingLeft || 0);
     openTheme(slug);
   }
-
-  var active = null;
-  function setActive(slug) {
-    if (active === slug) return;
-    active = slug;
-    nav.mark(slug && (XL[slug] || slug));
-  }
-  var ticking = false;
-  function track() {
-    ticking = false;
-    if (modal.open) return;
-    var g = grid.getBoundingClientRect(), vh = window.innerHeight, vw = window.innerWidth;
-    if (g.bottom < vh * 0.3 || g.top > vh * 0.7) { setActive(null); return; }
-    var cy = vh * 0.55, cx = vw / 2, best = null, bd = 1e9;
-    cards.concat(xcards.filter(function (c) { return !c.hidden; })).forEach(function (c) {
-      var r = c.getBoundingClientRect();
-      var d = Math.abs(r.top + r.height / 2 - cy) * 3 + Math.abs(r.left + r.width / 2 - cx);
-      if (d < bd) { bd = d; best = c.dataset.slug || c.dataset.x; }
-    });
-    setActive(best);
-  }
-  window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(track); } }, { passive: true });
-  grid.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(track); } }, { passive: true });
 
   var modal = $('#modal'), mv = $('video', modal), pics = $('.modal__pics', modal), cur = null, gi = 0, pt = 0;
   function paintSum() {
@@ -154,7 +131,6 @@
     var page = x ? t.page : LT[slug] && L + LT[slug] + '/';
     $('.modal__more', modal).hidden = !page;
     if (page) $('.modal__more', modal).href = page;
-    setActive(slug);
     if (!modal.open) modal.showModal();
     modal.scrollTop = 0;
     $('.modal__box', modal).scrollTop = 0;
@@ -185,19 +161,42 @@
   $('.modal__x', modal).addEventListener('click', closeModal);
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
+  var zf = $('#zf'), zform = $('#zayavka .form'), zhome = zform.parentNode;
   function want(slug) {
     if (XB[slug] && !opts.some(function (l) { return l.dataset.slug === slug; })) {
       ddList.lastElementChild.insertAdjacentHTML('beforebegin', '<li role="option" data-slug="' + slug + '" aria-selected="false">' + ic('t-svoya') + esc(theme(slug).name) + '</li>');
       opts = $$('li', ddList);
     }
     pick(slug);
-    $('#zayavka input[name="guests"]').value = gi ? 50 : 30;
-    if (modal.open) closeModal();
-    $('#zayavka').scrollIntoView({ behavior: 'smooth' });
-    setTimeout(function () { $('#zayavka input[name="name"]').focus({ preventScroll: true }); }, 600);
+    $('input[name="guests"]', zform).value = gi ? 50 : 30;
+    zf.appendChild(zform);
+    zf.showModal();
+    $('input[name="name"]', zform).focus();
+  }
+  zf.addEventListener('close', function () { ddOpen(false); zhome.appendChild(zform); });
+  zf.addEventListener('cancel', function (e) { if (!ddList.hidden) { e.preventDefault(); ddOpen(false); ddBtn.focus(); } });
+  zf.addEventListener('click', function (e) { if (e.target === zf) zf.close(); });
+  $('.zf__x', zf).addEventListener('click', function () { zf.close(); });
+
+  function telFmt(v) {
+    var d = v.replace(/\D/g, '');
+    if (!d) return '';
+    d = ('7' + (d[0] === '7' || d[0] === '8' ? d.slice(1) : d)).slice(0, 11);
+    var r = '+7';
+    if (d.length > 1) r += ' (' + d.slice(1, 4);
+    if (d.length > 4) r += ') ' + d.slice(4, 7);
+    if (d.length > 7) r += '-' + d.slice(7, 9);
+    if (d.length > 9) r += '-' + d.slice(9, 11);
+    return r;
+  }
+  $$('input[type="tel"]').forEach(function (i) { i.addEventListener('input', function () { i.value = telFmt(i.value); }); });
+  function isBad(i) {
+    var b = i.type === 'tel' ? i.value.replace(/\D/g, '').length !== 11 : !i.value.trim();
+    i.classList.toggle('is-bad', b);
+    return b;
   }
   $('.form__send').addEventListener('click', function () {
-    var f = $('#zayavka .form'), bad = $$('input[name="name"], input[name="phone"]', f).filter(function (i) { i.classList.toggle('is-bad', !i.value.trim()); return !i.value.trim(); });
+    var f = zform, bad = $$('input[name="name"], input[name="phone"]', f).filter(isBad);
     if (bad.length) { bad[0].focus(); return; }
     $('.form__grid', f).style.display = 'none'; $('.form__cta', f).style.display = 'none'; $('.form__ok', f).hidden = false;
   });
@@ -308,17 +307,17 @@
     if (!b || b.disabled) return;
     $$('.atr__d.is-on', atr).forEach(function (x) { x.classList.remove('is-on'); });
     b.classList.add('is-on');
-    var p = $('.atr__pick', atr);
-    p.innerHTML = '<b>' + new Date(year, month, +b.dataset.d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'long' }) + '</b>' + (b.classList.contains('is-res') ? ' — предварительно занято, менеджер уточнит' : ' — свободно');
+    var p = $('.atr__pick', atr), res = b.classList.contains('is-res');
+    p.className = 'atr__pick ' + (res ? 'is-res' : 'is-free');
+    p.innerHTML = '<b>' + new Date(year, month, +b.dataset.d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'long' }) + '</b><span>' + (res ? 'предварительно занято, менеджер уточнит' : 'свободно') + '</span>';
   });
   $('.atr__send', atr).addEventListener('click', function () {
-    var bad = $$('.atr__form input', atr).filter(function (i) { i.classList.toggle('is-bad', !i.value.trim()); return !i.value.trim(); });
+    var bad = $$('.atr__form input', atr).filter(isBad);
     if (bad.length) { bad[0].focus(); return; }
     $('.atr__form', atr).hidden = true; $('.form__ok', atr).hidden = false;
   });
 
   setMode('atrium');
-  track();
   var hm = /tema=([\w-]+)/.exec(location.hash);
   if (hm && /[&#]g=50/.test(location.hash)) gi = 1;
   if (hm && (bySlug[hm[1]] || XB[hm[1]])) document.addEventListener('DOMContentLoaded', function () { if (XB[hm[1]]) { showAll(true); openTheme(hm[1]); } else goTheme(hm[1]); });
