@@ -10,15 +10,13 @@
   T.forEach(function (t) { bySlug[t.slug] = t; });
 
   var hv = $('.hero__media video');
-  var mode = 'atrium';
   function setMode(m) {
-    mode = m;
     $$('.seg__b').forEach(function (b) { var on = b.dataset.mode === m; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
     $$('[data-for]').forEach(function (el) { el.hidden = el.dataset.for !== m; });
     heroPlay();
   }
   function heroPlay() {
-    if (mode === 'atrium' && !modal.open && heroSeen) { var p = hv.play(); if (p && p.catch) p.catch(function () {}); } else hv.pause();
+    if (!modal.open && heroSeen) { var p = hv.play(); if (p && p.catch) p.catch(function () {}); } else hv.pause();
   }
   $$('.seg__b').forEach(function (b) { b.addEventListener('click', function () { setMode(b.dataset.mode); }); });
   var heroSeen = true;
