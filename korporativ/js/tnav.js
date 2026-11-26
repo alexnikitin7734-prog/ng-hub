@@ -1,6 +1,6 @@
 window.tnav = function (o) {
   var I = [['Гэтсби', 'getsbi', 'getsbi'], ['Казино', 'kazino', 'kazino'], ['СССР', 'sssr', 'sssr'], ['90-е', '90e', '90'], ['80-е', '80e', '80'],
-    ['Карнавал', 'maskarad', 'karnaval'], ['Кибер', 'kiberpank', 'kiber'], ['Black tie', '', 'blacktie'], ['Хоррор', 'horror'], ['Белая вечеринка', 'belaya'],
+    ['Карнавал', 'maskarad', 'karnaval'], ['Киберпанк', 'kiberpank', 'kiber'], ['Black tie', 'blacktie', 'blacktie'], ['Хоррор', 'horror'], ['Белая вечеринка', 'belaya'],
     ['Игра в кальмара', 'igra-v-kalmara'], ['Гавайи', 'gavayi'], ['Оскар', 'oscar'], ['Чикаго', 'chicago'], ['Дикий Запад', 'dikiy-zapad'], ['Пираты', 'piraty'],
     ['Дача', 'dacha'], ['Стиляги', 'stilyagi'], ['Рок', 'rok'], ['Космос', 'kosmos'], ['Барби', 'barbi'], ['Джеймс Бонд', 'bond'], ['Форт Боярд', 'fort-boyard'], ['Русский стиль', 'russkiy-stil']];
   var ic = function (id) { return '<svg class="ic"><use href="#' + id + '"/></svg>'; };

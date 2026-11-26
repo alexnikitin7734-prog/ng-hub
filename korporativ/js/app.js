@@ -42,7 +42,7 @@
     ['russian', 'russkiy-stil', 'Русский стиль', 'Самовар, хохлома и&nbsp;гармонь']];
   var XN = 5;
   var L = 'https://alexnikitin7734-prog.github.io/ng-hub/vecherinki/';
-  var LT = { getsbi: 'getsbi', kazino: 'kazino', '80': '80e', '90': '90e', karnaval: 'maskarad', kiber: 'kiberpank', sssr: 'sssr' };
+  var LT = { getsbi: 'getsbi', kazino: 'kazino', '80': '80e', '90': '90e', karnaval: 'maskarad', kiber: 'kiberpank', sssr: 'sssr', blacktie: 'blacktie' };
   $('.card--own', grid).insertAdjacentHTML('beforebegin', X.map(function (x) {
     return '<a class="card card--x" href="' + L + x[1] + '/" data-x="' + x[0] + '" hidden>' +
       '<img class="card__img" src="img/temy/' + x[0] + '.webp' + V + '" alt="" width="640" height="480" loading="lazy">' +
