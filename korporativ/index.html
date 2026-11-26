@@ -10,7 +10,10 @@
 <link rel="stylesheet" href="site/header-2025.css">
 <link rel="stylesheet" href="site/hdr26.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap">
-<link rel="stylesheet" href="css/style.css?v=23">
+<link rel="stylesheet" href="css/style.css?v=24">
+<link rel="stylesheet" href="css/ktg.css?v=1">
+<link rel="stylesheet" href="css/ng.css?v=1">
+<link rel="stylesheet" href="css/kalk.css?v=1">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -26,7 +29,6 @@
   <symbol id="i-gift" viewBox="0 0 24 24"><path d="M4 9h16v11H4zM4 9l1.6-4h12.8L20 9M12 5v15M8.5 5A2 2 0 0 1 12 5a2 2 0 0 1 3.5 0"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5Z"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="i-kit" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM9 7V5a3 3 0 0 1 6 0v2M4 12h16"/></symbol>
   <symbol id="t-getsbi" viewBox="0 0 24 24"><path d="M5 5h14c0 3.9-3.1 7-7 7s-7-3.1-7-7ZM12 12v7.5M8 20h8M6.5 8h11"/><path d="M15.5 2v.01M18.5 2.8v.01"/></symbol>
   <symbol id="t-kazino" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></symbol>
   <symbol id="t-90" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="8.5" cy="11" r="2"/><circle cx="15.5" cy="11" r="2"/><path d="M10.5 11h3M7 18.5l1.5-3h7l1.5 3"/></symbol>
@@ -1081,9 +1083,96 @@
     </div>
     <div class="grid" id="grid"></div>
     <button type="button" class="temy__more" aria-expanded="false"></button>
-    <a class="more" href="https://alexnikitin7734-prog.github.io/ng-hub/"><svg class="ic"><use href="#i-kit"/></svg>Собрать свой набор — в&nbsp;конструкторе<svg class="ic"><use href="#i-out"/></svg></a>
   </div>
 </section>
+
+<div class="ktg-root ng-root" id="ktg">
+  <section class="ktg-section" id="konstruktor">
+    <div class="ktg-container">
+      <h2 class="ktg-h2">Соберите свой Новый год</h2>
+      <p class="ktg-lead">Выберите праздник — программу включим сами. Дальше меняйте как хотите.</p>
+      <div class="kz-presets" data-kz-presets></div>
+      <div class="kz">
+        <div class="kz-main">
+          <div class="kz-guests"><b>Сколько гостей</b><strong class="kz-mini" data-kz-mini></strong>
+            <div class="ktg-stepper"><button type="button" data-kz-step="-10" aria-label="Меньше">−</button><input type="text" inputmode="numeric" value="50" data-kz-guests aria-label="Число гостей"><button type="button" data-kz-step="10" aria-label="Больше">+</button></div>
+          </div>
+          <div class="kz-groups" data-kz-groups></div>
+          <button class="kz-full" type="button" data-kz-full>Полный вид</button>
+        </div>
+        <aside class="kz-side">
+          <div class="ng-receipt kz-receipt">
+            <p class="ng-receipt__head"><b>АРЕНДА ПЛЮС</b>Новый год под ключ</p>
+            <p class="ng-receipt__title" data-kz-title></p>
+            <ul data-kz-rows></ul>
+            <p class="ng-receipt__sum"><span>ИТОГО</span><b data-kz-total></b></p>
+            <p class="ng-receipt__per"><span>На гостя</span><b data-kz-per></b></p>
+            <p class="ng-receipt__note">Цены «от», по первому комплекту. Люди — за 4 часа. От числа гостей считаются еда, бары и официанты. Столы и мастер-классы на большее число гостей, доставка, монтаж, мебель — в точной смете.</p>
+            <div class="ng-share" data-kz-share></div>
+          </div>
+          <button class="ktg-btn ktg-btn--primary ktg-btn--wide" type="button" data-kz-send>Отправить менеджеру</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="ktg-section" id="menu">
+    <div class="ktg-container">
+      <h2 class="ktg-h2">Весь Новый год в одном окне</h2>
+      <p class="ktg-lead">Соберите свою подборку — она сразу попадёт в смету.</p>
+      <div class="ktg-menu ng-menu">
+        <div class="ktg-groups" data-tabs></div>
+        <div class="ktg-toolbar">
+          <label class="ktg-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" placeholder="Например: покер, глинтвейн, коллаж" data-search></label>
+          <div class="ktg-dd" data-dd>
+            <button class="ktg-dd__btn" type="button" data-dd-btn><span data-dd-label>Сначала популярные</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="ktg-dd__list">
+              <button type="button" data-sort="pop" class="is-on">Сначала популярные</button>
+              <button type="button" data-sort="asc">Сначала дешевле</button>
+              <button type="button" data-sort="desc">Сначала дороже</button>
+            </div>
+          </div>
+        </div>
+        <div class="ktg-count" data-count></div>
+        <div class="ktg-grid" data-grid></div>
+        <div class="ktg-more"><button class="ktg-btn ktg-btn--ghost" type="button" data-more>Показать ещё</button><a class="ktg-catlink" href="#" target="_blank" rel="noopener" data-catlink>Раздел в каталоге</a></div>
+      </div>
+    </div>
+  </section>
+
+  <button class="ktg-cart ng-cart" type="button" data-cart>Подборка <span class="ktg-cart__n" data-cart-n>0</span><b data-cart-sum></b></button>
+
+  <div class="ktg-overlay" data-overlay></div>
+  <div class="ktg-modal" role="dialog" aria-modal="true" data-qv>
+    <button class="ktg-x" type="button" data-close aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="ktg-qv">
+      <div class="ktg-qv__media">
+        <div class="ktg-qv__img"><img src="" alt="" data-qv-img></div>
+        <div class="ktg-qv__sim"><small>Ещё фото</small><div data-qv-sim></div></div>
+      </div>
+      <div class="ktg-qv__body">
+        <span class="ktg-qv__group" data-qv-group></span>
+        <h3 data-qv-name></h3>
+        <div class="ktg-qv__price" data-qv-price></div>
+        <div class="ktg-qv__st" data-qv-st hidden></div>
+        <div class="ktg-qv__incbox" data-qv-inc hidden></div>
+        <div class="ktg-qv__opts" data-qv-opts></div>
+        <p class="ktg-qv__desc" data-qv-desc></p>
+        <div class="ktg-qv__actions">
+          <button class="ktg-btn ktg-btn--primary ktg-btn--wide" type="button" data-qv-pick>Добавить в подборку</button>
+          <div class="ktg-qv__nav">
+            <button class="ktg-btn ktg-btn--ghost ktg-btn--sm" type="button" data-qv-prev>Предыдущая</button>
+            <button class="ktg-btn ktg-btn--ghost ktg-btn--sm" type="button" data-qv-next>Следующая</button>
+          </div>
+          <a class="ktg-btn ktg-btn--ghost ktg-btn--sm" href="#" target="_blank" rel="noopener" data-qv-link>Полная карточка на сайте</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="ktg-qv-arrow ktg-qv-arrow--prev" type="button" data-qv-prev aria-label="Предыдущая"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button class="ktg-qv-arrow ktg-qv-arrow--next" type="button" data-qv-next aria-label="Следующая"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+
+</div>
 
 <section class="sec" id="svoe">
   <div class="wrap">
@@ -1196,6 +1285,7 @@
       <div class="form__head">
         <h2 class="h2">Хочу корпоратив</h2>
         <p class="sub">Перезвоним, уточним детали и&nbsp;пришлём смету</p>
+        <p class="ng-chosen" data-chosen hidden></p>
       </div>
       <div class="form__grid">
         <label class="fld"><span>Имя</span><input type="text" name="name" autocomplete="name"></label>
@@ -1289,5 +1379,14 @@
 <script src="js/party.js?v=1"></script>
 <script src="js/tnav.js?v=2"></script>
 <script src="js/app.js?v=21"></script>
+<script src="js/data.js?v=1"></script>
+<script src="js/qrcode.min.js?v=1"></script>
+<script src="js/ng-share.js?v=1"></script>
+<script src="js/kit-items.js?v=1"></script>
+<script src="js/komplekty.js?v=1"></script>
+<script src="js/shop.js?v=1"></script>
+<script>window.NG_KZ={"groups":[{"slug":"interaktivy","name":"Интерактивы","icon":"interaktivy","items":[{"code":"silomer-tyani-podarok","n":"Новогодний силомер","unit":"one","id":107159,"v":43000,"fee":0},{"code":"tir-spasi-novyj-god","n":"Тир «Спаси Новый год!»","unit":"one","id":107141,"v":44000,"fee":0},{"code":"novogodnij-tancbattl","n":"ТанцБаттл","unit":"one","id":106319,"v":44000,"fee":0},{"code":"novogodnij-orakul","n":"Новогодний оракул","unit":"one","id":98387,"v":64000,"fee":0},{"code":"tajnaya-pochta-deda-moroza","n":"Тайная почта Деда Мороза","unit":"one","id":106259,"v":89000,"fee":0}]},{"slug":"kazino","name":"Фан-казино","icon":"kazino","items":[{"code":"poker","n":"Покер","unit":"one","id":15861,"v":15000,"fee":0},{"code":"arenda-ruletki","n":"Рулетка","unit":"one","id":15858,"v":18000,"fee":0},{"code":"blek-dzhek","n":"Блэкджек","unit":"one","id":15867,"v":15000,"fee":0},{"code":"bakkara","n":"Баккара","unit":"one","id":16334,"v":16000,"fee":0},{"code":"kreps","n":"Крэпс","unit":"one","id":15870,"v":27000,"fee":0}]},{"slug":"kul-kazino","name":"Кулинарное казино","icon":"kul-kazino","items":[{"code":"chajnoe-kazino","n":"Чайное","unit":"one","id":39476,"v":20000,"fee":0},{"code":"shampanskoe-kazino-na-meropriyatie","n":"Шампанское","unit":"one","id":41048,"v":21000,"fee":0},{"code":"picca-kazino","n":"Пицца","unit":"one","id":42796,"v":24000,"fee":0},{"code":"kulinarnoe-kazino-syrnoe","n":"Сырное","unit":"one","id":39495,"v":27000,"fee":0},{"code":"kazino-shokoladnoe","n":"Шоколадное","unit":"one","id":40697,"v":27000,"fee":0}]},{"slug":"fotozony","name":"Фотозоны","icon":"fotozona","items":[{"code":"fotozona-skazochnaya-arka","n":"Сказочная арка","unit":"one","id":102903,"v":21000,"fee":0},{"code":"fotozona-ruki-s-shampanskim","n":"Руки с шампанским","unit":"one","id":93042,"v":22000,"fee":0},{"code":"fotobudka-novogodnyaya","n":"Новогодняя фотобудка","unit":"one","id":98571,"v":32000,"fee":0},{"code":"fotozona-severnye-oleni","n":"Северные олени","unit":"one","id":105453,"v":41000,"fee":0},{"code":"fotozona-2027-s-payetkami","n":"2027 с пайетками","unit":"one","id":103613,"v":50000,"fee":0}]},{"slug":"mk","name":"Мастер-классы","icon":"mk","items":[{"code":"master-klass-novogodnij-akvagrim","n":"Новогодний аквагрим","unit":"one","id":98499,"v":8500,"fee":0},{"code":"master-klass-novogodnij-fonar","n":"Новогодний фонарь","unit":"one","id":106247,"v":14500,"fee":0},{"code":"master-klass-novogodnij-kollazh","n":"Новогодний коллаж","unit":"one","id":107158,"v":15000,"fee":0},{"code":"master-klass-rospis-elochnyx-igrushek","n":"Роспись ёлочных игрушек","unit":"one","id":100000,"v":16000,"fee":0},{"code":"master-klass-obodok-kozochka","n":"Ободок «козочка»","unit":"one","id":107116,"v":17000,"fee":0}]},{"slug":"bar","name":"Бар","icon":"bar","items":[{"code":"piramida-iz-shampanskogo-56-bokalov-6-yarusov","n":"Пирамида шампанского","unit":"one","id":102444,"v":16000,"fee":0},{"code":"glintvejn-bar","n":"Глинтвейн-бар","unit":"portion","id":65495,"v":300,"fee":23000},{"code":"bar-v-probirkax","n":"Бар в пробирках","unit":"portion","id":66332,"v":400,"fee":23000},{"code":"welcome-bar","n":"Велком-бар","unit":"portion","id":84615,"v":450,"fee":23000},{"code":"detskiy-kokteyl-bar","n":"Детский коктейль-бар","unit":"guest","id":102553,"v":230,"fee":0}]},{"slug":"furshet","name":"Еда","icon":"furshet","items":[{"code":"gotovyj-furshet","n":"Фуршет «Мини»","unit":"guest","id":99631,"v":2900,"fee":0},{"code":"banket","n":"Банкет «Мини»","unit":"guest","id":99440,"v":3200,"fee":0},{"code":"kulinarnaya-stanciya-paelya","n":"Станция «Паэлья»","unit":"portion","id":102682,"v":550,"fee":12000},{"code":"raklet-bar","n":"Раклет","unit":"portion","id":31368,"v":940,"fee":12000},{"code":"kulinarnaya-stancziya-khamon","n":"Станция «Хамон»","unit":"portion","id":99957,"v":1140,"fee":12000}]},{"slug":"personal","name":"Персонал","icon":"ded-moroz","items":[{"code":"animator-ded-moroz","n":"Дед Мороз","unit":"hour","id":80017,"v":7000,"fee":0},{"code":"animator-snegurochka","n":"Снегурочка","unit":"hour","id":80041,"v":6500,"fee":0},{"code":"vedushhij","n":"Ведущий","unit":"hour","id":11268,"v":5000,"fee":0},{"code":"gadalka","n":"Гадалка","unit":"hour","id":15893,"v":11000,"fee":0},{"code":"oficianty","n":"Официанты","unit":"staff","id":0,"v":7500,"fee":0}]}],"presets":[{"code":"ofis","name":"Корпоратив в офисе","scene":"ofis","on":["tir-spasi-novyj-god","poker","master-klass-novogodnij-kollazh","fotobudka-novogodnyaya","gotovyj-furshet","oficianty"]},{"code":"banket","name":"Банкет на площадке","scene":"banket","on":["poker","arenda-ruletki","shampanskoe-kazino-na-meropriyatie","fotozona-2027-s-payetkami","piramida-iz-shampanskogo-56-bokalov-6-yarusov","banket","vedushhij","oficianty"]},{"code":"deti","name":"Ёлка для детей","scene":"deti","on":["animator-ded-moroz","animator-snegurochka","master-klass-novogodnij-akvagrim","master-klass-rospis-elochnyx-igrushek","kazino-shokoladnoe","fotozona-severnye-oleni","detskiy-kokteyl-bar","gotovyj-furshet"]},{"code":"ulitsa","name":"Праздник на улице","scene":"ulitsa","on":["silomer-tyani-podarok","tir-spasi-novyj-god","fotozona-skazochnaya-arka","glintvejn-bar","kulinarnaya-stanciya-paelya","animator-ded-moroz"]}]};</script>
+<script src="js/kalk.js?v=1"></script>
+<script>(function(){var c=document.querySelector("#ktg .ktg-cart");function f(){var bot=0;[].slice.call(document.querySelectorAll("header.header, header.header *")).forEach(function(e){var p=getComputedStyle(e).position;if(p!=="fixed"&&p!=="sticky")return;var b=e.getBoundingClientRect();if(!b.height||b.height>250||getComputedStyle(e).visibility==="hidden"||getComputedStyle(e).opacity==="0")return;if(b.bottom>innerHeight-5)bot=Math.max(bot,innerHeight-b.top);});c.style.bottom=(bot?bot+12:24)+"px";}f();addEventListener("resize",f);addEventListener("load",f);setTimeout(f,800);addEventListener("scroll",function(){if(scrollY<5)setTimeout(f,350);},{passive:true});})();</script>
 </body>
 </html>

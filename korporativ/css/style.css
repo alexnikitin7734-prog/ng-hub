@@ -170,9 +170,6 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .foot{padding:28px 0;border-top:1px solid var(--line);color:var(--mut);font-size:14px}
 .foot a{color:var(--ink)}
 
-.more{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:15px;font-weight:500;color:var(--accent) !important;text-decoration:none;transition:color .2s}
-.more:hover{color:var(--accent-h) !important}
-.more .ic{width:16px;height:16px}
 
 .scope{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .scope__i{display:flex;flex-direction:column;padding:20px;border-radius:var(--r-lg);background:var(--card);box-shadow:var(--sh)}
