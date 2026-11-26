@@ -31,7 +31,7 @@
   }).join('') +
     '<a class="card card--own" href="#zayavka"><img class="card__img" src="img/temy/svoya.webp' + V + '" alt="" width="640" height="480" loading="lazy"><h3 class="card__name">Своя тема</h3>' +
     '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p></a>';
-  var X = [['halloween', 'hellouin', 'Хэллоуин', 'Тыквы, свечи и&nbsp;костюмы пострашнее'],
+  var X = [['halloween', 'horror', 'Хоррор', 'Маски, грим, туман и&nbsp;мурашки по&nbsp;коже'],
     ['white', 'belaya', 'Белая вечеринка', 'Всё в&nbsp;белом: цветы, свечи и&nbsp;лёгкий шик'], ['squid', 'igra-v-kalmara', 'Игра в&nbsp;кальмара', 'Розовые маски, испытания и&nbsp;азарт до&nbsp;финала'],
     ['gavaii', 'gavayi', 'Гавайи', 'Леи, укулеле и&nbsp;коктейли в&nbsp;кокосах'], ['oscar', 'oscar', 'Оскар', 'Красная дорожка, статуэтки и&nbsp;свои номинации'],
     ['chicago', 'chicago', 'Чикаго 30-х', 'Сухой закон, джаз и&nbsp;шляпы федора'], ['zapad', 'dikiy-zapad', 'Дикий Запад', 'Салун, ковбойские шляпы и&nbsp;звезда шерифа'],
@@ -59,8 +59,15 @@
   xmore.addEventListener('click', function () { showAll(xmore.getAttribute('aria-expanded') !== 'true'); });
   var cards = $$('.card[data-slug]', grid);
 
-  var XL = {};
-  X.forEach(function (x) { XL[x[0]] = x[1]; });
+  var XL = {}, XB = {}, PT = window.PARTY || {};
+  X.forEach(function (x) { XL[x[0]] = x[1]; XB[x[0]] = x; });
+  var ALL = T.map(function (t) { return t.slug; }).concat(X.map(function (x) { return x[0]; }));
+  var un = function (h) { return h.replace(/&nbsp;/g, ' '); };
+  function theme(slug) {
+    var x = XB[slug]; if (!x) return bySlug[slug];
+    var p = PT[x[1]] || { total: [0, 0], groups: [], gal: [], c: [] };
+    return { slug: slug, name: un(x[2]), mood: un(x[3]), total: p.total, groups: p.groups, c: p.c, gal: p.gal.map(function (g) { return '../vecherinki/' + x[1] + '/' + g; }), page: L + x[1] + '/' };
+  }
   var nav = window.tnav({ root: '../', here: 'hub', onTheme: goTheme });
   function goTheme(slug) {
     var c = $('.card[data-slug="' + slug + '"]', grid);
@@ -91,9 +98,9 @@
   }
   window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(track); } }, { passive: true });
 
-  var modal = $('#modal'), mv = $('video', modal), cur = null, gi = 0;
+  var modal = $('#modal'), mv = $('video', modal), pics = $('.modal__pics', modal), cur = null, gi = 0, pt = 0;
   function paintSum() {
-    var t = bySlug[cur];
+    var t = theme(cur);
     $$('.seg__g', modal).forEach(function (b) { var on = +b.dataset.g === gi; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
     $('.modal__sum', modal).textContent = 'от ' + money(t.total[gi]);
     $('.modal__per', modal).textContent = '≈ ' + money(Math.round(t.total[gi] / [30, 50][gi] / 100) * 100);
@@ -107,30 +114,52 @@
     }).join('');
   }
   $$('.seg__g', modal).forEach(function (b) { b.addEventListener('click', function () { gi = +b.dataset.g; paintSum(); }); });
+  function picsGo(n) {
+    var im = $$('img', pics), d = $$('.modal__dot', pics);
+    if (!im.length) return;
+    n = (n + im.length) % im.length;
+    im.forEach(function (e, k) { e.classList.toggle('is-on', k === n); });
+    d.forEach(function (e, k) { e.classList.toggle('is-on', k === n); });
+    clearTimeout(pt);
+    if (im.length > 1) pt = setTimeout(function () { picsGo(n + 1); }, 3500);
+  }
+  pics.addEventListener('click', function (e) { var b = e.target.closest('.modal__dot'); if (b) picsGo(+b.dataset.n); });
   function openTheme(slug) {
-    var t = bySlug[slug];
+    var t = theme(slug), x = XB[slug];
     cur = slug;
     $('.modal__title', modal).textContent = t.name;
     $('.modal__mood', modal).textContent = t.mood;
     $('.chek__name', modal).textContent = t.name;
-    modal.dataset.t = slug;
+    modal.dataset.t = x ? 'party' : slug;
+    ['--bg1', '--bg2', '--acc'].forEach(function (v, k) { if (x && t.c[k]) modal.style.setProperty(v, t.c[k]); else modal.style.removeProperty(v); });
     $('.modal__img', modal).src = 'img/temy/' + slug + '.webp' + V;
-    mv.poster = 'video/' + slug + '-big.jpg' + V;
-    mv.src = 'video/' + slug + '-big.mp4' + V;
+    clearTimeout(pt);
+    if (x) {
+      mv.pause(); mv.removeAttribute('src'); mv.removeAttribute('poster'); mv.hidden = true;
+      pics.innerHTML = t.gal.map(function (g, k) { return '<img src="' + g + '" alt="' + esc(t.name) + '"' + (k ? ' loading="lazy"' : '') + '>'; }).join('') +
+        (t.gal.length > 1 ? '<div class="modal__dots">' + t.gal.map(function (g, k) { return '<button type="button" class="modal__dot" data-n="' + k + '" aria-label="Фото ' + (k + 1) + '"></button>'; }).join('') + '</div>' : '');
+      pics.hidden = false;
+      picsGo(0);
+    } else {
+      pics.hidden = true; pics.innerHTML = ''; mv.hidden = false;
+      mv.poster = 'video/' + slug + '-big.jpg' + V;
+      mv.src = 'video/' + slug + '-big.mp4' + V;
+    }
     paintSum();
     $('.modal__go', modal).dataset.slug = slug;
-    $('.modal__more', modal).hidden = !LT[slug];
-    if (LT[slug]) $('.modal__more', modal).href = L + LT[slug] + '/';
+    var page = x ? t.page : LT[slug] && L + LT[slug] + '/';
+    $('.modal__more', modal).hidden = !page;
+    if (page) $('.modal__more', modal).href = page;
     setActive(slug);
     if (!modal.open) modal.showModal();
     modal.scrollTop = 0;
     $('.modal__box', modal).scrollTop = 0;
     $('.chek__scroll', modal).scrollTop = 0;
     heroPlay();
-    var p = mv.play(); if (p && p.catch) p.catch(function () {});
+    if (!x) { var p = mv.play(); if (p && p.catch) p.catch(function () {}); }
     window.FX.start(modal, slug);
   }
-  function step(d) { openTheme(T[(T.indexOf(bySlug[cur]) + d + T.length) % T.length].slug); }
+  function step(d) { openTheme(ALL[(ALL.indexOf(cur) + d + ALL.length) % ALL.length]); }
   $('.modal__nav--prev', modal).addEventListener('click', function () { step(-1); });
   $('.modal__nav--next', modal).addEventListener('click', function () { step(1); });
   modal.addEventListener('keydown', function (e) {
@@ -148,11 +177,15 @@
     if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
   }, { passive: true });
   function closeModal() { modal.close(); }
-  modal.addEventListener('close', function () { window.FX.stop(); mv.pause(); mv.removeAttribute('src'); mv.load(); heroPlay(); });
+  modal.addEventListener('close', function () { window.FX.stop(); clearTimeout(pt); mv.pause(); mv.removeAttribute('src'); mv.load(); heroPlay(); });
   $('.modal__x', modal).addEventListener('click', closeModal);
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
 
   function want(slug) {
+    if (XB[slug] && !opts.some(function (l) { return l.dataset.slug === slug; })) {
+      ddList.lastElementChild.insertAdjacentHTML('beforebegin', '<li role="option" data-slug="' + slug + '" aria-selected="false">' + ic('t-svoya') + esc(theme(slug).name) + '</li>');
+      opts = $$('li', ddList);
+    }
     pick(slug);
     $('#zayavka input[name="guests"]').value = gi ? 50 : 30;
     if (modal.open) closeModal();
@@ -167,8 +200,9 @@
   $('.modal__go', modal).addEventListener('click', function (e) { e.preventDefault(); want(this.dataset.slug); });
 
   grid.addEventListener('click', function (e) {
-    var c = e.target.closest('.card[data-slug]'); if (!c) return;
-    openTheme(c.dataset.slug);
+    var c = e.target.closest('.card[data-slug], .card--x'); if (!c) return;
+    if (c.dataset.x) { if (e.ctrlKey || e.metaKey || e.shiftKey || e.button) return; e.preventDefault(); }
+    openTheme(c.dataset.slug || c.dataset.x);
   });
   grid.addEventListener('keydown', function (e) {
     var c = e.target.closest('.card[data-slug]'); if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openTheme(c.dataset.slug); }
@@ -282,5 +316,5 @@
   setMode('atrium');
   track();
   var hm = /tema=([\w-]+)/.exec(location.hash);
-  if (hm && bySlug[hm[1]]) goTheme(hm[1]);
+  if (hm && (bySlug[hm[1]] || XB[hm[1]])) { if (XB[hm[1]]) { showAll(true); openTheme(hm[1]); } else goTheme(hm[1]); }
 })();
