@@ -33,21 +33,22 @@
   }).join('') +
     '<a class="card card--own" href="#zayavka"><img class="card__img" src="img/temy/svoya.webp' + V + '" alt="" width="640" height="480" loading="lazy"><h3 class="card__name">Своя тема</h3>' +
     '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p></a>';
-  var X = [['sssr', 'СССР', 'Вымпелы, пломбир и&nbsp;хиты «Голубого огонька»'], ['halloween', 'Хэллоуин', 'Тыквы, свечи и&nbsp;костюмы пострашнее'],
-    ['white', 'Белая вечеринка', 'Всё в&nbsp;белом: цветы, свечи и&nbsp;лёгкий шик'], ['squid', 'Игра в&nbsp;кальмара', 'Розовые маски, испытания и&nbsp;азарт до&nbsp;финала'],
-    ['gavaii', 'Гавайи', 'Леи, укулеле и&nbsp;коктейли в&nbsp;кокосах'], ['oscar', 'Оскар', 'Красная дорожка, статуэтки и&nbsp;свои номинации'],
-    ['chicago', 'Чикаго 30-х', 'Сухой закон, джаз и&nbsp;шляпы федора'], ['zapad', 'Дикий Запад', 'Салун, ковбойские шляпы и&nbsp;звезда шерифа'],
-    ['piraty', 'Пираты', 'Треуголки, карта и&nbsp;сундук с&nbsp;сокровищами'], ['dacha', 'Дача', 'Самовар, яблоки и&nbsp;гирлянды в&nbsp;саду'],
-    ['stilyagi', 'Стиляги', 'Буги-вуги, коки и&nbsp;платья в&nbsp;горох'], ['rock', 'Рок', 'Электрогитары, кожа и&nbsp;живой драйв'],
-    ['cosmos', 'Космос', 'Ракеты, звёзды и&nbsp;вечер на&nbsp;орбите'], ['barbie', 'Барби', 'Всё розовое, блёстки и&nbsp;каблуки'],
-    ['bond', 'Джеймс Бонд', 'Смокинги, мартини и&nbsp;шпионские игры'], ['fort', 'Форт Боярд', 'Ключи, испытания и&nbsp;сундук с&nbsp;призом'],
-    ['russian', 'Русский стиль', 'Самовар, хохлома и&nbsp;гармонь']];
+  var X = [['sssr', 'sssr', 'СССР', 'Вымпелы, пломбир и&nbsp;хиты «Голубого огонька»'], ['halloween', 'hellouin', 'Хэллоуин', 'Тыквы, свечи и&nbsp;костюмы пострашнее'],
+    ['white', 'belaya', 'Белая вечеринка', 'Всё в&nbsp;белом: цветы, свечи и&nbsp;лёгкий шик'], ['squid', 'igra-v-kalmara', 'Игра в&nbsp;кальмара', 'Розовые маски, испытания и&nbsp;азарт до&nbsp;финала'],
+    ['gavaii', 'gavayi', 'Гавайи', 'Леи, укулеле и&nbsp;коктейли в&nbsp;кокосах'], ['oscar', 'oscar', 'Оскар', 'Красная дорожка, статуэтки и&nbsp;свои номинации'],
+    ['chicago', 'chicago', 'Чикаго 30-х', 'Сухой закон, джаз и&nbsp;шляпы федора'], ['zapad', 'dikiy-zapad', 'Дикий Запад', 'Салун, ковбойские шляпы и&nbsp;звезда шерифа'],
+    ['piraty', 'piraty', 'Пираты', 'Треуголки, карта и&nbsp;сундук с&nbsp;сокровищами'], ['dacha', 'dacha', 'Дача', 'Самовар, яблоки и&nbsp;гирлянды в&nbsp;саду'],
+    ['stilyagi', 'stilyagi', 'Стиляги', 'Буги-вуги, коки и&nbsp;платья в&nbsp;горох'], ['rock', 'rok', 'Рок', 'Электрогитары, кожа и&nbsp;живой драйв'],
+    ['cosmos', 'kosmos', 'Космос', 'Ракеты, звёзды и&nbsp;вечер на&nbsp;орбите'], ['barbie', 'barbi', 'Барби', 'Всё розовое, блёстки и&nbsp;каблуки'],
+    ['bond', 'bond', 'Джеймс Бонд', 'Смокинги, мартини и&nbsp;шпионские игры'], ['fort', 'fort-boyard', 'Форт Боярд', 'Ключи, испытания и&nbsp;сундук с&nbsp;призом'],
+    ['russian', 'russkiy-stil', 'Русский стиль', 'Самовар, хохлома и&nbsp;гармонь']];
   var XN = 6;
-  var nm = function (x) { return x[1].replace(/&nbsp;/g, ' '); };
+  var L = 'https://alexnikitin7734-prog.github.io/ng-hub/vecherinki/';
+  var LT = { getsbi: 'getsbi', kazino: 'kazino', '80': '80e', '90': '90e', karnaval: 'maskarad', kiber: 'kiberpank' };
   $('.card--own', grid).insertAdjacentHTML('beforebegin', X.map(function (x) {
-    return '<a class="card card--x" href="#zayavka" data-x="' + x[0] + '" data-tema="' + esc(nm(x)) + '" hidden>' +
+    return '<a class="card card--x" href="' + L + x[1] + '/" data-x="' + x[0] + '" hidden>' +
       '<img class="card__img" src="img/temy/' + x[0] + '.webp' + V + '" alt="" width="640" height="480" loading="lazy">' +
-      '<h3 class="card__name">' + x[1] + '</h3><p class="card__mood">' + x[2] + '</p></a>';
+      '<h3 class="card__name">' + x[2] + '</h3><p class="card__mood">' + x[3] + '</p></a>';
   }).join(''));
   var xcards = $$('.card--x', grid), xmore = $('.temy__more');
   xmore.innerHTML = '<span>Ещё ' + X.length + ' тематических вечеринок</span>' + ic('i-down');
@@ -58,11 +59,6 @@
     xmore.firstChild.textContent = o ? 'Свернуть' : 'Ещё ' + X.length + ' тематических вечеринок';
   }
   xmore.addEventListener('click', function () { showAll(xmore.getAttribute('aria-expanded') !== 'true'); });
-  grid.addEventListener('click', function (e) {
-    var c = e.target.closest('.card--x'); if (!c) return;
-    pickName(c.dataset.tema);
-    setTimeout(function () { $('#zayavka input[name="name"]').focus({ preventScroll: true }); }, 600);
-  });
   var cards = $$('.card[data-slug]', grid);
 
   var hdr = document.getElementById('hdr26');
@@ -71,15 +67,15 @@
   links.className = 'tnav';
   links.innerHTML = '<a class="tnav__hol" href="https://arenda-attrakcionov.ru/attrakciony-na-novyj-god/">' + ic('i-gift') + 'Новый год</a>' +
     T.map(function (t) { return '<button type="button" data-slug="' + t.slug + '">' + esc(t.name) + '</button>'; }).join('') +
-    X.slice(0, XN).map(function (x) { return '<button type="button" data-x="' + x[0] + '">' + x[1] + '</button>'; }).join('');
+    X.slice(0, XN).map(function (x) { return '<a class="tnav__x" href="' + L + x[1] + '/" data-x="' + x[0] + '">' + x[2] + '</a>'; }).join('');
   if (row) { row.classList.add('tnav-row'); row.insertBefore(links, row.firstChild); }
 
   var active = null;
   function setActive(slug) {
     if (active === slug) return;
     active = slug;
-    $$('button', links).forEach(function (b) { b.classList.toggle('is-on', !!slug && (b.dataset.slug || b.dataset.x) === slug); });
-    var b = slug && $('button[data-slug="' + slug + '"], button[data-x="' + slug + '"]', links);
+    $$('button, .tnav__x', links).forEach(function (b) { b.classList.toggle('is-on', !!slug && (b.dataset.slug || b.dataset.x) === slug); });
+    var b = slug && $('[data-slug="' + slug + '"], [data-x="' + slug + '"]', links);
     if (!b) return;
     if (links.scrollWidth > links.clientWidth) links.scrollTo({ left: Math.max(0, b.offsetLeft - (links.clientWidth - b.offsetWidth) / 2), behavior: 'smooth' });
   }
@@ -127,6 +123,8 @@
     mv.src = 'video/' + slug + '-big.mp4' + V;
     paintSum();
     $('.modal__go', modal).dataset.slug = slug;
+    $('.modal__more', modal).hidden = !LT[slug];
+    if (LT[slug]) $('.modal__more', modal).href = L + LT[slug] + '/';
     setActive(slug);
     if (!modal.open) modal.showModal();
     modal.scrollTop = 0;
@@ -179,17 +177,6 @@
   grid.addEventListener('keydown', function (e) {
     var c = e.target.closest('.card[data-slug]'); if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openTheme(c.dataset.slug); }
   });
-  var hlT = 0;
-  links.addEventListener('click', function (e) {
-    var bx = e.target.closest('button[data-x]'); if (!bx) return;
-    showAll(true);
-    var c = $('.card--x[data-x="' + bx.dataset.x + '"]', grid);
-    var top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
-    window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - top - 24, behavior: 'instant' });
-    $$('.card.is-hl', grid).forEach(function (k) { k.classList.remove('is-hl'); });
-    c.classList.add('is-hl');
-    clearTimeout(hlT); hlT = setTimeout(function () { c.classList.remove('is-hl'); }, 2400);
-  });
   links.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-slug]'); if (!b) return;
     var c = $('.card[data-slug="' + b.dataset.slug + '"]', grid);
@@ -239,16 +226,6 @@
   ddList.innerHTML = T.map(function (t) { return '<li role="option" data-slug="' + t.slug + '" aria-selected="false">' + ic('t-' + t.slug) + esc(t.name) + '</li>'; }).join('') +
     '<li role="option" data-slug="" aria-selected="false">' + ic('t-svoya') + 'Пока не знаем — посоветуйте</li>';
   var opts = $$('li', ddList);
-  function pickName(name) {
-    var l = opts.filter(function (l) { return l.textContent === name; })[0];
-    if (!l) {
-      l = document.createElement('li');
-      l.setAttribute('role', 'option'); l.dataset.slug = 'v:' + name; l.setAttribute('aria-selected', 'false');
-      l.innerHTML = ic('t-svoya') + esc(name);
-      ddList.insertBefore(l, ddList.lastChild); opts = $$('li', ddList);
-    }
-    pick(l.dataset.slug);
-  }
   function ddOpen(o) { ddList.hidden = !o; ddBtn.setAttribute('aria-expanded', o); if (o) { hl = Math.max(0, opts.findIndex(function (l) { return l.getAttribute('aria-selected') === 'true'; })); paint(); } }
   function paint() { opts.forEach(function (l, i) { l.classList.toggle('is-hl', i === hl); }); }
   function pick(slug) {
