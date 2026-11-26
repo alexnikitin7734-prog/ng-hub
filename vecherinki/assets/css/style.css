@@ -101,10 +101,10 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .card--own{color:inherit;text-decoration:none;background:transparent;box-shadow:none;border:1.5px dashed rgba(49,45,43,.18)}
 .card--own:hover{transform:none;box-shadow:none}
 .card--x{color:inherit;text-decoration:none}
-.grid.is-all .card--own{grid-column:1/-1;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:auto auto;align-content:center;column-gap:28px}
-.grid.is-all .card--own .card__img{grid-row:1/3}
-.grid.is-all .card--own .card__name{align-self:end;margin-top:0}
-.grid.is-all .card--own .card__mood{align-self:start;min-height:0}
+.grid .card--own{grid-column:1/-1;display:grid;grid-template-columns:220px minmax(0,1fr);grid-template-rows:auto auto;align-content:center;column-gap:28px}
+.grid .card--own .card__img{grid-row:1/3}
+.grid .card--own .card__name{align-self:end;margin-top:0}
+.grid .card--own .card__mood{align-self:start;min-height:0}
 .temy__more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:56px;margin-top:16px;border:0;border-radius:var(--r-lg);background:var(--card);box-shadow:var(--sh);color:var(--ink);font:500 16px/1 var(--font);cursor:pointer;transition:color .2s,box-shadow .2s}
 .temy__more:hover{color:var(--accent);box-shadow:var(--sh-h)}
 .temy__more .ic{width:18px;height:18px;transition:transform .2s}
@@ -297,6 +297,8 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .modal[data-t=kiber]::before{background:linear-gradient(rgba(54,227,255,.07) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(54,227,255,.07) 1px,transparent 1px) 0 0/40px 40px;-webkit-mask:radial-gradient(80% 80% at 30% 40%,#000,transparent);mask:radial-gradient(80% 80% at 30% 40%,#000,transparent)}
 .modal[data-t=blacktie]{--bg1:#09090a;--bg2:#1f1d21;--acc:#d6b978}
 .modal[data-t=blacktie]::before{background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 14px)}
+.modal[data-t=sssr]{--bg1:#241410;--bg2:#7a1a14;--acc:#e9b44c}
+.modal[data-t=sssr]::before{background:repeating-linear-gradient(135deg,rgba(233,180,76,.05) 0 2px,transparent 2px 22px),radial-gradient(60% 50% at 85% 0%,rgba(229,72,61,.35),transparent)}
 .modal__fx{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none}
 .modal__box{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:36px;max-height:calc(100vh - 48px);padding:60px 72px 44px;overflow:auto;overscroll-behavior:contain}
 .modal__x{position:absolute;z-index:3;top:12px;right:12px;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid rgba(255,255,255,.2);border-radius:50%;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:background .2s}
@@ -383,8 +385,8 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
   .grid{grid-template-columns:1fr;gap:12px}
   .card{padding:20px}
   .card__name{margin-top:16px;font-size:22px}
-  .grid.is-all .card--own{display:flex}
-  .grid.is-all .card--own .card__name{margin-top:16px}
+  .grid .card--own{display:flex}
+  .grid .card--own .card__name{margin-top:16px}
   .temy__more{height:52px;margin-top:12px;font-size:15px}
   .steps{grid-template-columns:1fr;gap:12px}
   .form{padding:24px 20px}

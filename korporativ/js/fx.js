@@ -6,7 +6,8 @@
     '80': { c: ['#ff5cc0', '#59e6ff', '#b78cff', '#fff1a8'], amb: [['spark', 22], ['flare', 6]] },
     karnaval: { c: ['#efbe62', '#d9467f', '#8e5be0', '#f2e6c9', '#3bb3a6'], amb: [['foil', 18], ['ribbon', 7]] },
     kiber: { c: ['#36e3ff', '#2f7bea', '#ff2fd0', '#b6f7ff'], amb: [['bit', 26], ['glitch', 5]] },
-    blacktie: { c: ['#d9bd7a', '#f4ead2', '#bfc3c9'], amb: [['glint', 10]] }
+    blacktie: { c: ['#d9bd7a', '#f4ead2', '#bfc3c9'], amb: [['glint', 10]] },
+    sssr: { c: ['#e5483d', '#e9b44c', '#fff1d6'], amb: [['star', 10], ['foil', 12]] }
   };
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
   var cv, ctx, chek, th, amb = [], raf = 0, last = 0, t0 = 0, W = 0, H = 0, dpr = 1, glow = {};

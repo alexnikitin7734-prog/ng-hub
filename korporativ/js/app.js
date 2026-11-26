@@ -1,6 +1,6 @@
 (function () {
   var T = window.THEMES;
-  var V = '?v=9';
+  var V = '?v=10';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]; }); };
@@ -33,7 +33,7 @@
   }).join('') +
     '<a class="card card--own" href="#zayavka"><img class="card__img" src="img/temy/svoya.webp' + V + '" alt="" width="640" height="480" loading="lazy"><h3 class="card__name">Своя тема</h3>' +
     '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p></a>';
-  var X = [['sssr', 'sssr', 'СССР', 'Вымпелы, пломбир и&nbsp;хиты «Голубого огонька»'], ['halloween', 'hellouin', 'Хэллоуин', 'Тыквы, свечи и&nbsp;костюмы пострашнее'],
+  var X = [['halloween', 'hellouin', 'Хэллоуин', 'Тыквы, свечи и&nbsp;костюмы пострашнее'],
     ['white', 'belaya', 'Белая вечеринка', 'Всё в&nbsp;белом: цветы, свечи и&nbsp;лёгкий шик'], ['squid', 'igra-v-kalmara', 'Игра в&nbsp;кальмара', 'Розовые маски, испытания и&nbsp;азарт до&nbsp;финала'],
     ['gavaii', 'gavayi', 'Гавайи', 'Леи, укулеле и&nbsp;коктейли в&nbsp;кокосах'], ['oscar', 'oscar', 'Оскар', 'Красная дорожка, статуэтки и&nbsp;свои номинации'],
     ['chicago', 'chicago', 'Чикаго 30-х', 'Сухой закон, джаз и&nbsp;шляпы федора'], ['zapad', 'dikiy-zapad', 'Дикий Запад', 'Салун, ковбойские шляпы и&nbsp;звезда шерифа'],
@@ -42,9 +42,9 @@
     ['cosmos', 'kosmos', 'Космос', 'Ракеты, звёзды и&nbsp;вечер на&nbsp;орбите'], ['barbie', 'barbi', 'Барби', 'Всё розовое, блёстки и&nbsp;каблуки'],
     ['bond', 'bond', 'Джеймс Бонд', 'Смокинги, мартини и&nbsp;шпионские игры'], ['fort', 'fort-boyard', 'Форт Боярд', 'Ключи, испытания и&nbsp;сундук с&nbsp;призом'],
     ['russian', 'russkiy-stil', 'Русский стиль', 'Самовар, хохлома и&nbsp;гармонь']];
-  var XN = 6;
+  var XN = 5;
   var L = 'https://alexnikitin7734-prog.github.io/ng-hub/vecherinki/';
-  var LT = { getsbi: 'getsbi', kazino: 'kazino', '80': '80e', '90': '90e', karnaval: 'maskarad', kiber: 'kiberpank' };
+  var LT = { getsbi: 'getsbi', kazino: 'kazino', '80': '80e', '90': '90e', karnaval: 'maskarad', kiber: 'kiberpank', sssr: 'sssr' };
   $('.card--own', grid).insertAdjacentHTML('beforebegin', X.map(function (x) {
     return '<a class="card card--x" href="' + L + x[1] + '/" data-x="' + x[0] + '" hidden>' +
       '<img class="card__img" src="img/temy/' + x[0] + '.webp' + V + '" alt="" width="640" height="480" loading="lazy">' +
