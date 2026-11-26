@@ -129,9 +129,16 @@
 
   function want(slug) {
     pick(slug);
+    $('#zayavka input[name="guests"]').value = gi ? 50 : 30;
     if (modal.open) closeModal();
     $('#zayavka').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(function () { $('#zayavka input[name="name"]').focus({ preventScroll: true }); }, 600);
   }
+  $('.form__send').addEventListener('click', function () {
+    var f = $('#zayavka .form'), bad = $$('input[name="name"], input[name="phone"]', f).filter(function (i) { i.classList.toggle('is-bad', !i.value.trim()); return !i.value.trim(); });
+    if (bad.length) { bad[0].focus(); return; }
+    $('.form__grid', f).style.display = 'none'; $('.form__cta', f).style.display = 'none'; $('.form__ok', f).hidden = false;
+  });
   $('.modal__go', modal).addEventListener('click', function (e) { e.preventDefault(); want(this.dataset.slug); });
 
   grid.addEventListener('click', function (e) {

@@ -40,7 +40,6 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .btn--light:hover{border-color:rgba(49,45,43,.3)}
 .btn--sm{height:42px;padding:0 18px;font-size:15px}
 .btn .ic{width:16px;height:16px}
-.stub{border:1.5px dashed rgba(254,93,38,.55)}
 
 .hero{padding-top:0}
 .hero__card{position:relative;display:flex;align-items:flex-end;min-height:min(640px,calc(100vh - var(--hdr26-h) - 48px));border-radius:var(--r-lg);overflow:hidden;background:#1a1716;color:#fff}
@@ -110,12 +109,13 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 
 #zayavka{padding-bottom:72px}
 .form{padding:40px;border-radius:var(--r-lg);background:#fff;box-shadow:var(--sh)}
-.stub--line{margin:20px 0 0;padding:10px 14px;border-radius:var(--r-sm);color:var(--accent);font-size:14px}
 .form__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:24px}
 .fld{display:flex;flex-direction:column;gap:6px;min-width:0}
 .fld>span{font-size:14px;color:var(--mut)}
 .fld--wide{grid-column:1/-1}
 .fld input,.dd__btn{height:50px;width:100%;padding:0 16px;border:1px solid var(--line);border-radius:var(--r-md);background:#fff;font:16px var(--font);color:var(--ink);outline:none;transition:border-color .2s}
+.fld input.is-bad{border-color:#e5484d}
+.form__ok{margin:28px 0 0;font-size:18px;line-height:1.5;color:var(--ink)}
 .fld input:focus,.dd__btn:focus-visible,.dd__btn[aria-expanded="true"]{border-color:var(--accent)}
 .seg--form{align-self:flex-start}
 .dd{position:relative}
