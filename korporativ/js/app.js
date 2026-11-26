@@ -197,6 +197,16 @@
   ddList.innerHTML = T.map(function (t) { return '<li role="option" data-slug="' + t.slug + '" aria-selected="false">' + ic('t-' + t.slug) + esc(t.name) + '</li>'; }).join('') +
     '<li role="option" data-slug="" aria-selected="false">' + ic('t-svoya') + 'Пока не знаем — посоветуйте</li>';
   var opts = $$('li', ddList);
+  function pickName(name) {
+    var l = opts.filter(function (l) { return l.textContent === name; })[0];
+    if (!l) {
+      l = document.createElement('li');
+      l.setAttribute('role', 'option'); l.dataset.slug = 'v:' + name; l.setAttribute('aria-selected', 'false');
+      l.innerHTML = ic('t-svoya') + esc(name);
+      ddList.insertBefore(l, ddList.lastChild); opts = $$('li', ddList);
+    }
+    pick(l.dataset.slug);
+  }
   function ddOpen(o) { ddList.hidden = !o; ddBtn.setAttribute('aria-expanded', o); if (o) { hl = Math.max(0, opts.findIndex(function (l) { return l.getAttribute('aria-selected') === 'true'; })); paint(); } }
   function paint() { opts.forEach(function (l, i) { l.classList.toggle('is-hl', i === hl); }); }
   function pick(slug) {
@@ -214,6 +224,44 @@
     else if (e.key === 'Escape') ddOpen(false);
   });
   document.addEventListener('click', function (e) { if (!dd.contains(e.target)) ddOpen(false); });
+
+  var VP = [['Гэтсби', 'getsbi'], ['Казино', 'kazino'], ['80-е', '80-e'], ['90-е', '90-e'], ['Маскарад', 'maskarad'], ['СССР', 'sssr'], ['Оскар', 'oscar'], ['Чикаго 30-х', 'chicago'],
+    ['Стиляги', 'stilyagi'], ['Рок', 'rock'], ['Белая вечеринка', 'white'], ['Игра в кальмара', 'squid'], ['Барби', 'barbie'], ['Джеймс Бонд', 'bond'], ['Форт Боярд', 'fort'], ['Пираты', 'piraty'],
+    ['Дикий Запад', 'zapad'], ['Гавайи', 'gavaii'], ['Дача', 'dacha'], ['Русский стиль', 'russian'], ['Киберпанк', 'cyberpunk'], ['Космос', 'cosmos'], ['Хэллоуин', 'halloween']];
+  var vtile = function (v) { return '<a class="vp__i" href="#zayavka" data-tema="' + esc(v[0]) + '"><img src="img/vecherinki/' + v[1] + '.webp?v=1" alt="" width="480" height="600" loading="lazy"><span>' + esc(v[0]) + '</span></a>'; };
+  var vb = document.createElement('button');
+  vb.type = 'button'; vb.className = 'tnav__vp'; vb.setAttribute('aria-expanded', 'false'); vb.setAttribute('aria-controls', 'vp');
+  vb.innerHTML = 'Вечеринки' + ic('i-down');
+  links.appendChild(vb);
+  var vp = document.createElement('div');
+  vp.className = 'vp'; vp.id = 'vp'; vp.hidden = true;
+  vp.innerHTML = '<div class="vp__head"><p class="vp__t">Тематические вечеринки</p><p class="vp__s">Соберём любую под ваш повод — выберите тему, и&nbsp;она встанет в&nbsp;заявку</p></div>' +
+    '<div class="vp__grid">' + VP.slice(0, 8).map(vtile).join('') + '</div>' +
+    '<div class="vp__grid vp__more" hidden>' + VP.slice(8).map(vtile).join('') + '</div>' +
+    '<button type="button" class="vp__btn" aria-expanded="false">Ещё темы' + ic('i-down') + '</button>';
+  document.body.appendChild(vp);
+  var vMore = $('.vp__more', vp), vMoreB = $('.vp__btn', vp), vTimer = 0, vHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  function vpOpen(o) {
+    clearTimeout(vTimer);
+    if (o) { var r = vb.getBoundingClientRect(); vp.style.setProperty('--vp-top', Math.round(r.bottom + 8) + 'px'); vp.style.setProperty('--vp-left', Math.round(row.getBoundingClientRect().left) + 'px'); var bar = $('.hdr26-bar'), br = bar && bar.getBoundingClientRect(); vp.style.setProperty('--vp-bot', (br && br.height && br.top < window.innerHeight ? Math.round(window.innerHeight - br.top) : 0) + 'px'); }
+    vp.hidden = !o; vb.setAttribute('aria-expanded', o); vb.classList.toggle('is-open', o);
+  }
+  vb.addEventListener('click', function () { vpOpen(vHover || vp.hidden); });
+  vMoreB.addEventListener('click', function () { var o = vMore.hidden; vMore.hidden = !o; vMoreB.setAttribute('aria-expanded', o); vMoreB.firstChild.textContent = o ? 'Свернуть' : 'Ещё темы'; });
+  if (vHover) {
+    [vb, vp].forEach(function (el) {
+      el.addEventListener('mouseenter', function () { vpOpen(true); });
+      el.addEventListener('mouseleave', function () { vTimer = setTimeout(function () { vpOpen(false); }, 250); });
+    });
+  }
+  vp.addEventListener('click', function (e) {
+    var a = e.target.closest('.vp__i'); if (!a) return;
+    pickName(a.dataset.tema); vpOpen(false);
+    setTimeout(function () { $('#zayavka input[name="name"]').focus({ preventScroll: true }); }, 600);
+  });
+  document.addEventListener('click', function (e) { if (!vp.hidden && !vp.contains(e.target) && !vb.contains(e.target)) vpOpen(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !vp.hidden) { vpOpen(false); vb.focus(); } });
+  window.addEventListener('scroll', function () { if (!vp.hidden) vp.style.setProperty('--vp-top', Math.round(vb.getBoundingClientRect().bottom + 8) + 'px'); }, { passive: true });
 
   $$('.sl').forEach(function (sl) {
     var tr = $('.sl__track', sl), dots = $$('.sl__dots i', sl);
