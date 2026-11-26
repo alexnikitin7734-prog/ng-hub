@@ -178,6 +178,53 @@
   });
   document.addEventListener('click', function (e) { if (!dd.contains(e.target)) ddOpen(false); });
 
+  $$('.sl').forEach(function (sl) {
+    var tr = $('.sl__track', sl), dots = $$('.sl__dots i', sl);
+    $$('[data-go]', sl).forEach(function (b) { b.addEventListener('click', function () { tr.scrollBy({ left: +b.dataset.go * tr.clientWidth, behavior: 'smooth' }); }); });
+    tr.addEventListener('scroll', function () {
+      var k = Math.round(tr.scrollLeft / tr.clientWidth);
+      dots.forEach(function (d, n) { d.classList.toggle('is-on', n === k); });
+    }, { passive: true });
+  });
+
+  var atr = $('#atrium'), ym = atr.dataset.month.split('-'), year = +ym[0], month = +ym[1] - 1;
+  var busy = atr.dataset.busy.split(',').map(Number), reserve = [], drawn = false, today = new Date();
+  today.setHours(0, 0, 0, 0);
+  function drawDates() {
+    if (drawn) return;
+    drawn = true;
+    var days = $('.atr__days', atr), total = new Date(year, month + 1, 0).getDate(), free = 0, h = '';
+    for (var blank = (new Date(year, month, 1).getDay() + 6) % 7; blank > 0; blank--) h += '<span></span>';
+    for (var d = 1; d <= total; d++) {
+      var date = new Date(year, month, d), taken = busy.indexOf(d) !== -1, past = date < today, held = reserve.indexOf(d) !== -1, wd = date.getDay();
+      if (!taken && !past && !held) free++;
+      h += '<button type="button" class="atr__d' + (wd === 0 || wd === 6 ? ' is-wk' : '') + (taken ? ' is-busy' : past ? ' is-past' : held ? ' is-res' : '') + '" data-d="' + d + '"' + (taken || past ? ' disabled' : '') + '>' + d + '</button>';
+    }
+    days.innerHTML = h;
+    $('.atr__cnt', atr).textContent = 'свободно ' + free + ' из ' + total;
+  }
+  setTimeout(drawDates, 4000);
+  fetch('https://vyzovchat.ru/api/public/atrium?month=' + atr.dataset.month)
+    .then(function (r) { if (!r.ok) throw r; return r.json(); })
+    .then(function (j) { if (!drawn) { busy = j.busy; reserve = j.reserve; atr.dataset.live = '1'; } })
+    .catch(function () {})
+    .then(drawDates);
+  var mname = new Date(year, month, 1).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }).replace(' г.', '');
+  $('.atr__month', atr).textContent = mname.charAt(0).toUpperCase() + mname.slice(1);
+  $('.atr__days', atr).addEventListener('click', function (e) {
+    var b = e.target.closest('[data-d]');
+    if (!b || b.disabled) return;
+    $$('.atr__d.is-on', atr).forEach(function (x) { x.classList.remove('is-on'); });
+    b.classList.add('is-on');
+    var p = $('.atr__pick', atr);
+    p.innerHTML = '<b>' + new Date(year, month, +b.dataset.d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'long' }) + '</b>' + (b.classList.contains('is-res') ? ' — предварительно занято, менеджер уточнит' : ' — свободно');
+  });
+  $('.atr__send', atr).addEventListener('click', function () {
+    var bad = $$('.atr__form input', atr).filter(function (i) { i.classList.toggle('is-bad', !i.value.trim()); return !i.value.trim(); });
+    if (bad.length) { bad[0].focus(); return; }
+    $('.atr__form', atr).hidden = true; $('.form__ok', atr).hidden = false;
+  });
+
   setMode('atrium');
   track();
 })();
