@@ -113,7 +113,7 @@
     vp.innerHTML = over.map(function (a) { return '<a class="tmore__a' + (a.classList.contains('is-on') ? ' is-on' : '') + '" href="' + a.getAttribute('href') + '">' + esc(a.textContent) + '</a>'; }).join('');
     vb.classList.toggle('is-on', over.some(function (a) { return a.classList.contains('is-on'); }));
     var cur = $('.tnav__a.is-on', links);
-    if (cur && !cur.hidden && links.scrollWidth > links.clientWidth) links.scrollLeft = Math.max(0, cur.offsetLeft - (links.clientWidth - cur.offsetWidth) / 2);
+    if (cur && !cur.hidden && cur.offsetLeft + cur.offsetWidth > links.clientWidth) links.scrollLeft = Math.max(0, cur.offsetLeft - (links.clientWidth - cur.offsetWidth) / 2);
   }
   fit();
   if (document.fonts) document.fonts.ready.then(fit);
