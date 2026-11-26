@@ -1,15 +1,15 @@
 (function () {
   var TH = {
-    getsbi: { c: ['#ffe39a', '#e7c36a', '#fff6da', '#c9a227'], amb: [['glint', 22], ['bubble', 12]], burst: ['glint', 'foil', 'foil'], n: 80 },
-    kazino: { c: ['#d6343c', '#1d1d1f', '#ebc86e', '#2b62c8', '#f3ead7'], amb: [['chip', 7], ['suit', 9]], burst: ['chip', 'suit', 'foil'], n: 64 },
-    '90': { c: ['#c8ff3e', '#ff4fb8', '#29e0d0', '#ffe14d', '#8b5cff'], amb: [['star', 10], ['squig', 8], ['tri', 8]], burst: ['star', 'squig', 'tri', 'foil'], n: 80 },
-    '80': { c: ['#ff5cc0', '#59e6ff', '#b78cff', '#fff1a8'], amb: [['spark', 22], ['flare', 6]], burst: ['spark', 'star', 'foil'], n: 80 },
-    karnaval: { c: ['#efbe62', '#d9467f', '#8e5be0', '#f2e6c9', '#3bb3a6'], amb: [['foil', 18], ['ribbon', 7]], burst: ['foil', 'foil', 'ribbon'], n: 90 },
-    kiber: { c: ['#36e3ff', '#2f7bea', '#ff2fd0', '#b6f7ff'], amb: [['bit', 26], ['glitch', 5]], burst: ['bit', 'spark'], n: 80 },
-    blacktie: { c: ['#d9bd7a', '#f4ead2', '#bfc3c9'], amb: [['glint', 10]], burst: ['glint', 'foil'], n: 50 }
+    getsbi: { c: ['#ffe39a', '#e7c36a', '#fff6da', '#c9a227'], amb: [['glint', 22], ['bubble', 12]] },
+    kazino: { c: ['#d6343c', '#1d1d1f', '#ebc86e', '#2b62c8', '#f3ead7'], amb: [['chip', 7], ['suit', 9]] },
+    '90': { c: ['#c8ff3e', '#ff4fb8', '#29e0d0', '#ffe14d', '#8b5cff'], amb: [['star', 10], ['squig', 8], ['tri', 8]] },
+    '80': { c: ['#ff5cc0', '#59e6ff', '#b78cff', '#fff1a8'], amb: [['spark', 22], ['flare', 6]] },
+    karnaval: { c: ['#efbe62', '#d9467f', '#8e5be0', '#f2e6c9', '#3bb3a6'], amb: [['foil', 18], ['ribbon', 7]] },
+    kiber: { c: ['#36e3ff', '#2f7bea', '#ff2fd0', '#b6f7ff'], amb: [['bit', 26], ['glitch', 5]] },
+    blacktie: { c: ['#d9bd7a', '#f4ead2', '#bfc3c9'], amb: [['glint', 10]] }
   };
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var cv, ctx, chek, th, amb = [], bst = [], raf = 0, last = 0, t0 = 0, W = 0, H = 0, dpr = 1, glow = {};
+  var cv, ctx, chek, th, amb = [], raf = 0, last = 0, t0 = 0, W = 0, H = 0, dpr = 1, glow = {};
   var rnd = function (a, b) { return a + Math.random() * (b - a); };
   var pick = function (a) { return a[Math.random() * a.length | 0]; };
 
@@ -105,11 +105,10 @@
     ctx.restore();
   }
 
-  function step(p, dt, wrap) {
+  function step(p, dt) {
     p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
     if (p.k === 'foil' || p.k === 'ribbon' || p.k === 'chip' || p.k === 'suit') p.x += Math.sin(p.y * .02 + p.ph) * 12 * dt;
     if (p.k === 'glitch') { p.tt += dt; if (p.tt > rnd(.8, 2.4)) { p.tt = 0; p.x = rnd(0, W); p.y = rnd(0, H); p.s = rnd(20, 90); } }
-    if (!wrap) return;
     if (p.y > H + 40) init(p, p.k, false);
     else if (p.y < -40) { init(p, p.k, false); p.y = H + 30; }
     if (p.x < -40) p.x = W + 30; else if (p.x > W + 40) p.x = -30;
@@ -122,15 +121,8 @@
     var hr = cv.getBoundingClientRect(), r = chek.getBoundingClientRect();
     ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.rect(r.left - hr.left, r.top - hr.top, r.width, r.height); ctx.clip('evenodd');
     var fa = Math.min(1, Math.max(0, (t - .5) / 1.2));
-    for (var i = 0; i < amb.length; i++) { step(amb[i], dt, true); draw(amb[i], fa * (amb[i].k === 'glint' || amb[i].k === 'bubble' ? .8 : .55), t); }
+    for (var i = 0; i < amb.length; i++) { step(amb[i], dt); draw(amb[i], fa * (amb[i].k === 'glint' || amb[i].k === 'bubble' ? .8 : .55), t); }
     ctx.restore();
-    for (var j = bst.length - 1; j >= 0; j--) {
-      var p = bst[j]; p.life -= dt;
-      if (p.life <= 0) { bst.splice(j, 1); continue; }
-      p.vx *= Math.pow(.25, dt); p.vy = p.vy * Math.pow(.25, dt) + 700 * dt;
-      step(p, dt, false);
-      draw(p, Math.min(1, p.life / .45), t);
-    }
     ctx.globalAlpha = 1;
   }
 
@@ -149,16 +141,6 @@
     var mob = W < 700 ? .6 : 1;
     amb = [];
     th.amb.forEach(function (a) { for (var i = 0; i < Math.round(a[1] * mob); i++) amb.push(init({}, a[0], true)); });
-    bst = [];
-    var n = Math.round(th.n * mob), sp = Math.max(H, 600);
-    for (var i = 0; i < n; i++) {
-      var left = i % 2 === 0, p = init({}, pick(th.burst), true);
-      var ang = (left ? -62 : -118) * Math.PI / 180 + rnd(-.38, .38), v = rnd(.9, 1.7) * sp;
-      p.x = left ? rnd(-10, 30) : W - rnd(-10, 30); p.y = H + 10;
-      p.vx = Math.cos(ang) * v; p.vy = Math.sin(ang) * v; p.life = rnd(1.1, 1.6);
-      if (p.k === 'bit') p.len = 6;
-      bst.push(p);
-    }
     t0 = last = performance.now();
     raf = requestAnimationFrame(frame);
     window.addEventListener('resize', size);
@@ -166,7 +148,7 @@
 
   function stop() {
     if (raf) cancelAnimationFrame(raf);
-    raf = 0; amb = []; bst = [];
+    raf = 0; amb = [];
     window.removeEventListener('resize', size);
     if (ctx) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); }
   }

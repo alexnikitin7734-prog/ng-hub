@@ -1,6 +1,6 @@
 (function () {
   var T = window.THEMES;
-  var V = '?v=3';
+  var V = '?v=4';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]; }); };
@@ -108,6 +108,23 @@
     var p = mv.play(); if (p && p.catch) p.catch(function () {});
     window.FX.start(modal, slug);
   }
+  function step(d) { openTheme(T[(T.indexOf(bySlug[cur]) + d + T.length) % T.length].slug); }
+  $('.modal__nav--prev', modal).addEventListener('click', function () { step(-1); });
+  $('.modal__nav--next', modal).addEventListener('click', function () { step(1); });
+  modal.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); step(e.key === 'ArrowLeft' ? -1 : 1); }
+  });
+  var tx = null, ty = 0;
+  modal.addEventListener('touchstart', function (e) { tx = e.touches.length === 1 ? e.touches[0].clientX : null; ty = tx === null ? 0 : e.touches[0].clientY; }, { passive: true });
+  modal.addEventListener('touchmove', function (e) {
+    if (tx !== null && Math.abs(e.touches[0].clientX - tx) > Math.abs(e.touches[0].clientY - ty)) e.preventDefault();
+  }, { passive: false });
+  modal.addEventListener('touchend', function (e) {
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    tx = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+  }, { passive: true });
   function closeModal() { modal.close(); }
   modal.addEventListener('close', function () { window.FX.stop(); mv.pause(); mv.removeAttribute('src'); mv.load(); heroPlay(); });
   $('.modal__x', modal).addEventListener('click', closeModal);
