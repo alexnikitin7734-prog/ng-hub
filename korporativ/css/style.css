@@ -40,7 +40,6 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .btn--light:hover{border-color:rgba(49,45,43,.3)}
 .btn--sm{height:42px;padding:0 18px;font-size:15px}
 .btn .ic{width:16px;height:16px}
-.card__open .ic{fill:currentColor;stroke:none}
 .stub{border:1.5px dashed rgba(254,93,38,.55)}
 
 .hero{padding-top:0}
@@ -100,13 +99,7 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .card__img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:16px;background:#E6E6E6}
 .card__name{margin:20px 0 6px;font:700 24px/1.2 var(--head);color:var(--ink)}
 .card__mood{margin:0;min-height:2.9em;color:var(--mut);font-size:15px;line-height:1.45}
-.card__row .btn{flex:1}
-.card__price{margin:20px 0 0;padding:14px 0 0;border-top:1px solid var(--line);display:grid;gap:6px}
-.card__price div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.card__price dt{color:var(--mut);font-size:14px}
-.card__price dd{margin:0;font-weight:600;font-size:17px;color:var(--ink);white-space:nowrap}
-.card__row{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:20px;flex-wrap:wrap}
-.card--own{cursor:default;background:transparent;box-shadow:none;border:1.5px dashed rgba(49,45,43,.18)}
+.card--own{color:inherit;text-decoration:none;background:transparent;box-shadow:none;border:1.5px dashed rgba(49,45,43,.18)}
 .card--own:hover{transform:none;box-shadow:none}
 
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0;padding:0;list-style:none}

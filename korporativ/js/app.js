@@ -1,6 +1,6 @@
 (function () {
   var T = window.THEMES;
-  var V = '?v=6';
+  var V = '?v=7';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]; }); };
@@ -29,13 +29,10 @@
     return '<article class="card" data-slug="' + t.slug + '" tabindex="0" aria-label="' + esc(t.name) + '">' +
       '<img class="card__img" src="img/temy/' + t.slug + '.webp' + V + '" alt="" width="640" height="480" loading="lazy">' +
       '<h3 class="card__name">' + esc(t.name) + '</h3>' +
-      '<p class="card__mood">' + esc(t.mood) + '</p>' +
-      '<dl class="card__price"><div><dt>30 гостей</dt><dd>от ' + money(t.total[0]) + '</dd></div><div><dt>50 гостей</dt><dd>от ' + money(t.total[1]) + '</dd></div></dl>' +
-      '<div class="card__row"><button class="btn btn--primary btn--sm card__open" type="button">' + ic('i-play') + 'Программа и видео</button></div></article>';
+      '<p class="card__mood">' + esc(t.mood) + '</p></article>';
   }).join('') +
-    '<article class="card card--own"><img class="card__img" src="img/temy/svoya.webp' + V + '" alt="" width="640" height="480" loading="lazy"><h3 class="card__name">Своя тема</h3>' +
-    '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p>' +
-    '<div class="card__row"><a class="btn btn--light btn--sm" href="#zayavka">Обсудить</a></div></article>';
+    '<a class="card card--own" href="#zayavka"><img class="card__img" src="img/temy/svoya.webp' + V + '" alt="" width="640" height="480" loading="lazy"><h3 class="card__name">Своя тема</h3>' +
+    '<p class="card__mood">Не нашли свою — соберём программу под ваш повод и&nbsp;бюджет из того же каталога.</p></a>';
   var cards = $$('.card[data-slug]', grid);
 
   var hdr = document.getElementById('hdr26');
