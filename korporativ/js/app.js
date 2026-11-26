@@ -156,6 +156,43 @@
     openTheme(b.dataset.slug);
   });
 
+  var A = 'https://arenda-attrakcionov.ru/';
+  var KAT = {
+    kuhnya: { t: 'Своя кухня', s: 'Меню, форматы подачи и выездные бары — готовим и обслуживаем сами.', l: [
+      ['Кейтеринг', 'keytering/'], ['Кейтеринг на Новый Год', 'keytering-na-novyy-god/'], ['Фуршетное меню', 'dostavka-fursheta-v-ofis/'],
+      ['Организация банкета', 'organizaciya-banketa/'], ['Организация кофе-брейка', 'organizaciya-kofe-breyka/'], ['Кулинарные станции', 'animacionnye-stancii/'],
+      ['Выездной бар', 'vyezdnoy-bar/'], ['Новогодний бар', 'vyezdnoy-novogodniy-bar/'], ['Бар на корпоратив', 'bar-dlya-korporativa/'], ['Кэнди бар', 'kendi-bar/']] },
+    dekor: { t: 'Декор и ёлки', s: 'Новогодний декор, ёлки и фотозоны со своего склада.', l: [
+      ['Декор', 'arenda-dekora/'], ['Новогодний декор', 'novogodniy-dekor-v-arendu/'], ['Елки', 'elka-v-arendu/'],
+      ['Новогодние фотозоны', 'novogodnyaya-fotozona-v-arendu/'], ['Фотозоны 2027', 'fotozona-2027-v-arendu/'], ['Фотозона казино', 'fotozona-kazino/'],
+      ['Тематический декор', 'arenda-rekvizita/'], ['Лампы и светильники', 'arenda-svetilnikov/'], ['Подсвечники и канделябры', 'arenda-podsvechnikov-i-kandelyabrov/'],
+      ['Декор офиса к празднику', 'dekor-ofisa/']] },
+    personal: { t: 'Свой персонал', s: 'Люди на вечер — от официантов до Деда Мороза.', l: [
+      ['Персонал', 'personal-na-meropriyatie/'], ['Официанты', 'ofitsianty/'], ['Бармен', 'barmen/'], ['Персонал казино', 'personal-kazino/'],
+      ['Ведущий', 'vedushhij/'], ['Аниматор Дед Мороз', 'animator-ded-moroz/'], ['Аниматор Снегурочка', 'animator-snegurochka/'],
+      ['Хостес', 'xostes/'], ['Фотограф', 'fotograf/'], ['Артисты и шоу', 'artisty-i-shou/']] },
+    mebel: { t: 'Мебель', s: 'Столы, стулья и барные стойки со своего склада.', l: [
+      ['Мебель', 'arenda-mebeli/'], ['Мебель для банкета', 'arenda-mebeli-dlya-banketa/'], ['Столы', 'arenda-stolov-na-meropriyatie/'],
+      ['Фуршетные и банкетные столы', 'arenda-furshetnyh-stolov/'], ['Коктейльные столы', 'arenda-koktejlnyx-stolov/'], ['Стулья', 'arenda-stulev/'],
+      ['Банкетные стулья', 'arenda-banketnyx-stulev/'], ['Барные стойки', 'barnye-stojki-v-arendu/'], ['Светящаяся мебель', 'cvetyashchayasya-mebel-v-arendu/'],
+      ['Подборки мебели', 'podborki-mebeli-v-arendu/']] }
+  };
+  var kat = $('#kat'), scope = $('.scope');
+  function openKat(id) {
+    var k = KAT[id];
+    $('.kat__title', kat).textContent = k.t;
+    $('.kat__sub', kat).textContent = k.s;
+    $('.kat__list', kat).innerHTML = k.l.map(function (x) { return '<li><a href="' + A + x[1] + '" target="_blank" rel="noopener">' + esc(x[0]) + ic('i-out') + '</a></li>'; }).join('');
+    kat.showModal();
+    $('.kat__box', kat).scrollTop = 0;
+  }
+  scope.addEventListener('click', function (e) { var c = e.target.closest('[data-kat]'); if (c) openKat(c.dataset.kat); });
+  scope.addEventListener('keydown', function (e) {
+    var c = e.target.closest('[data-kat]'); if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openKat(c.dataset.kat); }
+  });
+  $('.kat__x', kat).addEventListener('click', function () { kat.close(); });
+  kat.addEventListener('click', function (e) { if (e.target === kat) kat.close(); });
+
   var dd = $('#dd'), ddBtn = $('.dd__btn', dd), ddList = $('.dd__list', dd), hl = -1;
   ddList.innerHTML = T.map(function (t) { return '<li role="option" data-slug="' + t.slug + '" aria-selected="false">' + ic('t-' + t.slug) + esc(t.name) + '</li>'; }).join('') +
     '<li role="option" data-slug="" aria-selected="false">' + ic('t-svoya') + 'Пока не знаем — посоветуйте</li>';

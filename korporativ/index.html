@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="site/header-2025.css">
 <link rel="stylesheet" href="site/hdr26.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap">
-<link rel="stylesheet" href="css/style.css?v=15">
+<link rel="stylesheet" href="css/style.css?v=16">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1091,10 +1091,10 @@
       <p class="sub">Один подрядчик от ёлки до уборки.</p>
     </div>
     <div class="scope">
-      <div class="scope__i"><img src="img/ikonki/ik-furshet.webp" alt="" width="400" height="300" loading="lazy"><b>Своя кухня</b><p>Фуршет, банкет, станции и&nbsp;бар</p></div>
-      <div class="scope__i"><img src="img/ikonki/ik-dekor.webp" alt="" width="400" height="300" loading="lazy"><b>Декор и ёлки</b><p>Оформим зал, вход и&nbsp;фотозону</p></div>
-      <div class="scope__i"><img src="img/ikonki/ik-ofitsianty.webp" alt="" width="400" height="300" loading="lazy"><b>Свой персонал</b><p>Официанты, бармены, крупье и&nbsp;ведущие</p></div>
-      <div class="scope__i"><img src="img/ikonki/ik-mebel.webp" alt="" width="400" height="300" loading="lazy"><b>Мебель</b><p>Столы, стулья и&nbsp;линии со&nbsp;своего склада</p></div>
+      <div class="scope__i" role="button" tabindex="0" data-kat="kuhnya"><img src="img/ikonki/ik-furshet.webp" alt="" width="400" height="300" loading="lazy"><b>Своя кухня</b><p>Фуршет, банкет, станции и&nbsp;бар</p></div>
+      <div class="scope__i" role="button" tabindex="0" data-kat="dekor"><img src="img/ikonki/ik-dekor.webp" alt="" width="400" height="300" loading="lazy"><b>Декор и ёлки</b><p>Оформим зал, вход и&nbsp;фотозону</p></div>
+      <div class="scope__i" role="button" tabindex="0" data-kat="personal"><img src="img/ikonki/ik-ofitsianty.webp" alt="" width="400" height="300" loading="lazy"><b>Свой персонал</b><p>Официанты, бармены, крупье и&nbsp;ведущие</p></div>
+      <div class="scope__i" role="button" tabindex="0" data-kat="mebel"><img src="img/ikonki/ik-mebel.webp" alt="" width="400" height="300" loading="lazy"><b>Мебель</b><p>Столы, стулья и&nbsp;линии со&nbsp;своего склада</p></div>
     </div>
   </div>
 </section>
@@ -1269,11 +1269,21 @@
   <canvas class="modal__fx" aria-hidden="true"></canvas>
 </dialog>
 
+<dialog class="kat" id="kat" aria-labelledby="kat-title">
+  <div class="kat__box">
+    <button class="kat__x" type="button" aria-label="Закрыть"><svg class="ic"><use href="#i-x"/></svg></button>
+    <p class="kat__kick">Каталог Аренды Плюс</p>
+    <h3 class="kat__title" id="kat-title"></h3>
+    <p class="kat__sub"></p>
+    <ul class="kat__list"></ul>
+  </div>
+</dialog>
+
 <script src="site/jquery.js"></script>
 <script src="site/hdr26.js"></script>
 <script src="site/header-2025.js"></script>
 <script src="js/themes.js?v=3"></script>
 <script src="js/fx.js?v=2"></script>
-<script src="js/app.js?v=12"></script>
+<script src="js/app.js?v=13"></script>
 </body>
 </html>
