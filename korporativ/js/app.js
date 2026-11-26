@@ -55,6 +55,7 @@
     grid.classList.toggle('is-all', o);
     xmore.setAttribute('aria-expanded', o);
     xmore.firstChild.textContent = o ? 'Свернуть' : 'Ещё ' + X.length + ' тематических вечеринок';
+    if (grid.scrollWidth > grid.clientWidth) grid.scrollTo({ left: o ? xcards[0].getBoundingClientRect().left - grid.getBoundingClientRect().left + grid.scrollLeft - parseFloat(getComputedStyle(grid).scrollPaddingLeft || 0) : 0 });
   }
   xmore.addEventListener('click', function () { showAll(xmore.getAttribute('aria-expanded') !== 'true'); });
   var cards = $$('.card[data-slug]', grid);
@@ -73,6 +74,7 @@
     var c = $('.card[data-slug="' + slug + '"]', grid);
     var top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
     window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - top - 24, behavior: 'instant' });
+    if (grid.scrollWidth > grid.clientWidth) grid.scrollLeft += c.getBoundingClientRect().left - grid.getBoundingClientRect().left - parseFloat(getComputedStyle(grid).scrollPaddingLeft || 0);
     openTheme(slug);
   }
 
@@ -97,6 +99,7 @@
     setActive(best);
   }
   window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(track); } }, { passive: true });
+  grid.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(track); } }, { passive: true });
 
   var modal = $('#modal'), mv = $('video', modal), pics = $('.modal__pics', modal), cur = null, gi = 0, pt = 0;
   function paintSum() {
@@ -104,6 +107,7 @@
     $$('.seg__g', modal).forEach(function (b) { var on = +b.dataset.g === gi; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
     $('.modal__sum', modal).textContent = 'от ' + money(t.total[gi]);
     $('.modal__per', modal).textContent = '≈ ' + money(Math.round(t.total[gi] / [30, 50][gi] / 100) * 100);
+    if (window.NG_SHARE) window.NG_SHARE($('.chek__share', modal), 'tema=' + cur + '&g=' + [30, 50][gi]);
     $('.inc', modal).innerHTML = t.groups.map(function (g) {
       return '<div class="inc__g"><p class="inc__t">' + esc(g.title) + '</p>' + g.items.map(function (i) {
         var q = /×|мин/.test(i.q[gi]) ? '<small>' + esc(i.q[gi]) + '</small>' : '';
@@ -316,5 +320,6 @@
   setMode('atrium');
   track();
   var hm = /tema=([\w-]+)/.exec(location.hash);
-  if (hm && (bySlug[hm[1]] || XB[hm[1]])) { if (XB[hm[1]]) { showAll(true); openTheme(hm[1]); } else goTheme(hm[1]); }
+  if (hm && /[&#]g=50/.test(location.hash)) gi = 1;
+  if (hm && (bySlug[hm[1]] || XB[hm[1]])) document.addEventListener('DOMContentLoaded', function () { if (XB[hm[1]]) { showAll(true); openTheme(hm[1]); } else goTheme(hm[1]); });
 })();

@@ -12,11 +12,12 @@
   }
   $$('.seg__b').forEach(function (b) { b.addEventListener('click', function () { setMode(b.dataset.mode); }); });
 
-  var gi = 0, ck = $('#sostav');
+  var gi = /[#&]g=50/.test(location.hash) ? 1 : 0, ck = $('#sostav');
   function paint() {
     $$('.seg__g', ck).forEach(function (b) { var on = +b.dataset.g === gi; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
     $('.ck__sum', ck).textContent = 'от ' + money(T.total[gi]);
     $('.ck__per', ck).textContent = '≈ ' + money(Math.round(T.total[gi] / [30, 50][gi] / 100) * 100);
+    if (window.NG_SHARE) window.NG_SHARE($('.chek__share', ck), 'g=' + [30, 50][gi]);
     $('.inc', ck).innerHTML = T.groups.map(function (g) {
       return '<div class="inc__g"><p class="inc__t">' + esc(g.title) + '</p>' + g.items.map(function (i) {
         var q = /×|мин|до \d/.test(i.q[gi]) ? '<small>' + esc(i.q[gi]) + '</small>' : '';

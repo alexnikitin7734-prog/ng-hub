@@ -90,6 +90,7 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .hero__pop span{display:flex;flex-direction:column;gap:2px;font-size:14px;line-height:1.25;color:var(--mut)}
 .hero__pop b{font:700 18px/1.2 var(--head);color:var(--ink)}
 .hero__pop[hidden]{display:none}
+.hero__pop .btn span+span{display:none}
 .hero__pop--big{gap:16px;padding:16px 16px 16px 16px;border-radius:22px}
 .hero__pop--big .ic{width:56px;height:56px;padding:13px;border-radius:16px}
 .hero__pop--big span{font-size:16px}
@@ -384,6 +385,8 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .chek__sum b{font-size:21px;letter-spacing:-.01em;white-space:nowrap}
 .chek .chek__per{display:flex;justify-content:space-between;margin:2px 0 14px;font-size:12px;color:#6b675e}
 .chek__per b{font-weight:400}
+.chek .ng-share{margin-top:14px}
+.chek .ng-share__qr{width:96px;height:96px}
 .modal__go{width:100%;height:46px}
 .modal__more{display:flex;align-items:center;justify-content:center;height:44px;margin-top:8px;border:1.5px solid var(--accent);border-radius:var(--r-md);color:var(--accent) !important;font-size:15px;font-weight:500;text-decoration:none}
 .modal__more:hover{background:var(--tint);color:var(--accent-h) !important}
@@ -460,3 +463,30 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .klod .card__name{font-size:31px;letter-spacing:0}
 .klod .modal__title{font-size:40px;letter-spacing:0}
 .klod .steps b{font-size:1.25em}
+@media (max-width:640px){
+  .hero__media{display:contents}
+  .hero__media::after{display:none}
+  .hero__media video{display:block;height:auto;aspect-ratio:16/10}
+  .hero__pop,.hero__pop--big{position:static;flex:none;gap:10px;margin:12px 12px 0;padding:8px 8px 8px 10px;border-radius:14px;box-shadow:none;animation:none}
+  .hero__pop .ic,.hero__pop--big .ic{width:32px;height:32px;padding:7px;border-radius:10px}
+  .hero__pop span,.hero__pop--big span{flex:1;min-width:0;gap:1px;font-size:12px;line-height:1.25}
+  .hero__pop b,.hero__pop--big b{font-size:15px;white-space:nowrap}
+  .hero__pop--big .btn{height:34px;padding:0 12px;margin-left:0;font-size:13px}
+  .hero__pop .btn span{display:none}
+  .hero__pop .btn span+span{display:inline}
+  .hero__text{padding-top:14px}
+
+  #grid{display:flex;gap:12px;margin:0 -15px;padding:2px 15px 16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 15px;overscroll-behavior-x:contain;scrollbar-width:none}
+  #grid::-webkit-scrollbar{display:none}
+  #grid>.card{flex:0 0 78%;min-width:0;scroll-snap-align:start}
+  .temy__more{margin-top:0}
+
+  #ktg .kz-groups{display:flex;align-items:flex-start;gap:8px;margin:0 -10px;padding:0 10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 10px;overscroll-behavior-x:contain;scrollbar-width:none}
+  #ktg .kz-groups::-webkit-scrollbar{display:none}
+  #ktg .kz-group{flex:0 0 88%;scroll-snap-align:start}
+  #ktg .kz-group__head{flex-wrap:wrap;gap:0 10px}
+  #ktg .kz-open{flex-basis:100%}
+  #ktg .kz-group__head img{width:40px;height:40px}
+  #ktg .kz-group__head b{font-size:16px;line-height:20px}
+  #ktg .kz-more{margin:2px 0 0 auto}
+}
