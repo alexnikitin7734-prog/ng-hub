@@ -169,11 +169,19 @@
     }
     pick(slug);
     $('input[name="guests"]', zform).value = gi ? 50 : 30;
+    var t = theme(slug), ch = $('[data-chosen]', zform);
+    ch.dataset.src = 'tema';
+    ch.textContent = t.name + ', ' + [30, 50][gi] + ' гостей — от ' + money(t.total[gi]);
+    ch.hidden = false;
     zf.appendChild(zform);
     zf.showModal();
     $('input[name="name"]', zform).focus();
   }
-  zf.addEventListener('close', function () { ddOpen(false); zhome.appendChild(zform); });
+  zf.addEventListener('close', function () {
+    var ch = $('[data-chosen]', zform);
+    if (ch.dataset.src === 'tema') { ch.dataset.src = ''; ch.textContent = ''; ch.hidden = true; }
+    ddOpen(false); zhome.appendChild(zform);
+  });
   zf.addEventListener('cancel', function (e) { if (!ddList.hidden) { e.preventDefault(); ddOpen(false); ddBtn.focus(); } });
   zf.addEventListener('click', function (e) { if (e.target === zf) zf.close(); });
   $('.zf__x', zf).addEventListener('click', function () { zf.close(); });
@@ -259,6 +267,7 @@
     $('.dd__val', dd).textContent = l ? l.textContent : 'Ещё не выбрали';
   }
   ddBtn.addEventListener('click', function () { ddOpen(ddList.hidden); });
+  document.addEventListener('ng:kz-send', function () { pick(null); });
   ddList.addEventListener('click', function (e) { var l = e.target.closest('li'); if (!l) return; pick(l.dataset.slug); ddOpen(false); ddBtn.focus(); });
   ddBtn.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {

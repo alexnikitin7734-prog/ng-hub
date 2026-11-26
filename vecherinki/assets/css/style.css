@@ -152,7 +152,7 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
 .form__head{grid-row:1/4;display:flex;flex-direction:column;justify-content:center;padding:48px 44px;border-radius:28px 0 0 28px;background:radial-gradient(120% 100% at 0% 0%,var(--bg2,#5a2a17) 0%,var(--bg1,#211a17) 72%);color:#fff}
 .form__head .h2{font-size:clamp(32px,3vw,46px);line-height:1.1;color:#fff;text-wrap:balance}
 .form__head .sub{margin-top:14px;color:rgba(255,255,255,.74);font-size:18px;line-height:1.45}
-.form__head .ng-chosen{margin-top:18px;padding:12px 14px;border-radius:var(--r-md);background:rgba(255,255,255,.1);color:#fff;font-size:14px;line-height:1.45}
+.form__head .ng-chosen{margin-top:18px;font-weight:500;padding:12px 14px;border-radius:var(--r-md);background:rgba(255,255,255,.1);color:#fff;font-size:14px;line-height:1.45}
 .form__grid,.form__cta,.form>.form__ok{grid-column:2}
 .form__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px;padding:44px 44px 0}
 .fld{display:flex;flex-direction:column;gap:8px;min-width:0}
