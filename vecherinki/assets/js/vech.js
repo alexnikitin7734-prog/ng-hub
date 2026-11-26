@@ -82,61 +82,7 @@
   lb.addEventListener('touchstart', function (e) { tx = e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
   lb.addEventListener('touchend', function (e) { if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 50) show(li + (dx < 0 ? 1 : -1)); }, { passive: true });
 
-  var ORDER = ['getsbi', 'kazino', '90e', '80e', 'maskarad', 'kiberpank', 'sssr', 'hellouin', 'belaya', 'igra-v-kalmara', 'gavayi', 'oscar', 'chicago', 'dikiy-zapad', 'piraty', 'dacha', 'stilyagi', 'rok', 'kosmos', 'barbi', 'bond', 'fort-boyard', 'russkiy-stil'];
-  var bySlug = {};
-  TEMY.forEach(function (t) { bySlug[t.slug] = t; });
-  var NAV = ORDER.filter(function (s) { return bySlug[s]; }).concat(TEMY.map(function (t) { return t.slug; }).filter(function (s) { return ORDER.indexOf(s) < 0; })).map(function (s) { return bySlug[s]; });
-  var hdr = document.getElementById('hdr26');
-  var row = hdr && hdr.querySelector('.hdr26__n .hdr26__c');
-  var links = document.createElement('div');
-  links.className = 'tnav';
-  links.innerHTML = '<a class="tnav__hol" href="https://arenda-attrakcionov.ru/tematicheskie-vecherinki/">' + ic('i-spark') + 'Тематические вечеринки</a>' +
-    NAV.map(function (t) { return '<a class="tnav__a' + (t.slug === T.slug ? ' is-on' : '') + '" href="../' + t.slug + '/"' + (t.slug === T.slug ? ' aria-current="page"' : '') + '>' + esc(t.name) + '</a>'; }).join('');
-  if (row) { row.classList.add('tnav-row'); row.insertBefore(links, row.firstChild); }
-  var vb = document.createElement('button');
-  vb.type = 'button'; vb.className = 'tnav__vp'; vb.setAttribute('aria-expanded', 'false'); vb.setAttribute('aria-controls', 'tmore');
-  vb.innerHTML = 'Ещё' + ic('i-down');
-  links.appendChild(vb);
-  var vp = document.createElement('div');
-  vp.className = 'tmore'; vp.id = 'tmore'; vp.hidden = true;
-  document.body.appendChild(vp);
-  var tl = $$('.tnav__a', links);
-  var desk = window.matchMedia('(min-width: 769px)');
-  function fit() {
-    tl.forEach(function (a) { a.hidden = false; });
-    vb.hidden = true;
-    var over = [];
-    if (desk.matches && links.scrollWidth > links.clientWidth + 1) {
-      vb.hidden = false;
-      for (var k = tl.length - 1; k >= 0 && links.scrollWidth > links.clientWidth + 1; k--) { tl[k].hidden = true; over.unshift(tl[k]); }
-    }
-    vp.innerHTML = over.map(function (a) { return '<a class="tmore__a' + (a.classList.contains('is-on') ? ' is-on' : '') + '" href="' + a.getAttribute('href') + '">' + esc(a.textContent) + '</a>'; }).join('');
-    vb.classList.toggle('is-on', over.some(function (a) { return a.classList.contains('is-on'); }));
-    var cur = $('.tnav__a.is-on', links);
-    if (cur && !cur.hidden && cur.offsetLeft + cur.offsetWidth > links.clientWidth) links.scrollLeft = Math.max(0, cur.offsetLeft - (links.clientWidth - cur.offsetWidth) / 2);
-  }
-  fit();
-  if (document.fonts) document.fonts.ready.then(fit);
-  window.addEventListener('load', fit);
-  var rt = 0;
-  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(fit, 120); });
-  var vTimer = 0, vAt = 0;
-  function vpOpen(o) {
-    clearTimeout(vTimer);
-    if (o) { var r = vb.getBoundingClientRect(); vp.style.setProperty('--vp-top', Math.round(r.bottom + 8) + 'px'); vp.style.setProperty('--vp-right', Math.round(window.innerWidth - r.right) + 'px'); }
-    if (o && vp.hidden) vAt = Date.now();
-    vp.hidden = !o; vb.setAttribute('aria-expanded', o); vb.classList.toggle('is-open', o);
-  }
-  vb.addEventListener('click', function () { if (!vp.hidden && Date.now() - vAt < 500) return; vpOpen(vp.hidden); });
-  if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    [vb, vp].forEach(function (el) {
-      el.addEventListener('mouseenter', function () { vpOpen(true); });
-      el.addEventListener('mouseleave', function () { vTimer = setTimeout(function () { vpOpen(false); }, 250); });
-    });
-  }
-  document.addEventListener('click', function (e) { if (!vp.hidden && !vp.contains(e.target) && !vb.contains(e.target)) vpOpen(false); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !vp.hidden) { vpOpen(false); vb.focus(); } });
-  window.addEventListener('scroll', function () { if (!vp.hidden) vp.style.setProperty('--vp-top', Math.round(vb.getBoundingClientRect().bottom + 8) + 'px'); }, { passive: true });
+  window.tnav({ root: '../../', here: T.slug });
 
   $$('.sl').forEach(function (sl) {
     var tr = $('.sl__track', sl), dots = $$('.sl__dots i', sl);

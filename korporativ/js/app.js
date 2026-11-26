@@ -61,23 +61,21 @@
   xmore.addEventListener('click', function () { showAll(xmore.getAttribute('aria-expanded') !== 'true'); });
   var cards = $$('.card[data-slug]', grid);
 
-  var hdr = document.getElementById('hdr26');
-  var row = hdr && hdr.querySelector('.hdr26__n .hdr26__c');
-  var links = document.createElement('div');
-  links.className = 'tnav';
-  links.innerHTML = '<a class="tnav__hol" href="https://arenda-attrakcionov.ru/attrakciony-na-novyj-god/">' + ic('i-gift') + 'Новый год</a>' +
-    T.map(function (t) { return '<button type="button" data-slug="' + t.slug + '">' + esc(t.name) + '</button>'; }).join('') +
-    X.slice(0, XN).map(function (x) { return '<a class="tnav__x" href="' + L + x[1] + '/" data-x="' + x[0] + '">' + x[2] + '</a>'; }).join('');
-  if (row) { row.classList.add('tnav-row'); row.insertBefore(links, row.firstChild); }
+  var XL = {};
+  X.forEach(function (x) { XL[x[0]] = x[1]; });
+  var nav = window.tnav({ root: '../', here: 'hub', onTheme: goTheme });
+  function goTheme(slug) {
+    var c = $('.card[data-slug="' + slug + '"]', grid);
+    var top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
+    window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - top - 24, behavior: 'instant' });
+    openTheme(slug);
+  }
 
   var active = null;
   function setActive(slug) {
     if (active === slug) return;
     active = slug;
-    $$('button, .tnav__x', links).forEach(function (b) { b.classList.toggle('is-on', !!slug && (b.dataset.slug || b.dataset.x) === slug); });
-    var b = slug && $('[data-slug="' + slug + '"], [data-x="' + slug + '"]', links);
-    if (!b) return;
-    if (links.scrollWidth > links.clientWidth) links.scrollTo({ left: Math.max(0, b.offsetLeft - (links.clientWidth - b.offsetWidth) / 2), behavior: 'smooth' });
+    nav.mark(slug && (XL[slug] || slug));
   }
   var ticking = false;
   function track() {
@@ -177,14 +175,6 @@
   grid.addEventListener('keydown', function (e) {
     var c = e.target.closest('.card[data-slug]'); if (c && e.target === c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openTheme(c.dataset.slug); }
   });
-  links.addEventListener('click', function (e) {
-    var b = e.target.closest('button[data-slug]'); if (!b) return;
-    var c = $('.card[data-slug="' + b.dataset.slug + '"]', grid);
-    var top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr26-hnow')) || 150;
-    window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - top - 24, behavior: 'instant' });
-    openTheme(b.dataset.slug);
-  });
-
   var A = 'https://arenda-attrakcionov.ru/';
   var KAT = {
     kuhnya: { t: 'Своя кухня', s: 'Меню, форматы подачи и выездные бары — готовим и обслуживаем сами.', l: [
@@ -293,4 +283,6 @@
 
   setMode('atrium');
   track();
+  var hm = /tema=([\w-]+)/.exec(location.hash);
+  if (hm && bySlug[hm[1]]) goTheme(hm[1]);
 })();
