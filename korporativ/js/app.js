@@ -267,7 +267,7 @@
     $('.dd__val', dd).textContent = l ? l.textContent : 'Ещё не выбрали';
   }
   ddBtn.addEventListener('click', function () { ddOpen(ddList.hidden); });
-  document.addEventListener('ng:kz-send', function () { pick(null); });
+  document.addEventListener('ng:kz-send', function () { pick(null); zf.appendChild(zform); zf.showModal(); $('input[name="name"]', zform).focus(); });
   ddList.addEventListener('click', function (e) { var l = e.target.closest('li'); if (!l) return; pick(l.dataset.slug); ddOpen(false); ddBtn.focus(); });
   ddBtn.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {

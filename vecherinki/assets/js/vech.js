@@ -60,6 +60,7 @@
       if (a.classList.contains('modal__go')) {
         $('input[name="guests"]', zform).value = gi ? 50 : 30;
         var ch = $('[data-chosen]', zform);
+        ch.dataset.src = 'tema';
         ch.textContent = T.name + ', ' + [30, 50][gi] + ' гостей — от ' + money(T.total[gi]);
         ch.hidden = false;
         zf.appendChild(zform);
@@ -71,7 +72,8 @@
       setTimeout(function () { $('#zayavka input[name="name"]').focus({ preventScroll: true }); }, 600);
     });
   });
-  zf.addEventListener('close', function () { var ch = $('[data-chosen]', zform); ch.textContent = ''; ch.hidden = true; ddOpen(false); zhome.appendChild(zform); });
+  zf.addEventListener('close', function () { var ch = $('[data-chosen]', zform); if (ch.dataset.src === 'tema') { ch.dataset.src = ''; ch.textContent = ''; ch.hidden = true; } ddOpen(false); zhome.appendChild(zform); });
+  document.addEventListener('ng:kz-send', function () { zf.appendChild(zform); zf.showModal(); $('input[name="name"]', zform).focus(); });
   zf.addEventListener('cancel', function (e) { if (!ddList.hidden) { e.preventDefault(); ddOpen(false); ddBtn.focus(); } });
   zf.addEventListener('click', function (e) { if (e.target === zf) zf.close(); });
   $('.zf__x', zf).addEventListener('click', function () { zf.close(); });

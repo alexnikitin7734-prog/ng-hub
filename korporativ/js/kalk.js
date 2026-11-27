@@ -129,7 +129,7 @@
     if (used) names.push(preset.name + ', ' + guests + ' гостей: ' + $$('[data-kz-rows] li>span').map(function (x) { return x.firstChild.textContent; }).join(', ') + ' — от ' + money(total));
     var ch = document.querySelector('[data-chosen]');
     ch.dataset.kz = names.join('. ');
-    if (ch.dataset.src === 'kz') { ch.textContent = ch.dataset.kz; ch.hidden = !ch.dataset.kz; document.querySelector('#zayavka input[name="guests"]').value = guests; }
+    if (ch.dataset.src === 'kz') { ch.textContent = ch.dataset.kz; ch.hidden = !ch.dataset.kz; ch.closest('.form').querySelector('input[name="guests"]').value = guests; }
   }
 
   // ссылка: праздник-гости-позиции-добавки из каталога; позиции по номеру карточки, официанты — s
@@ -222,7 +222,6 @@
       document.querySelector('[data-chosen]').dataset.src = 'kz';
       document.dispatchEvent(new CustomEvent('ng:kz-send'));
       render();
-      document.getElementById('zayavka').scrollIntoView();
     }
   }, true);
   $('[data-kz-guests]').addEventListener('change', function () { used = true; setGuests(this.value); });

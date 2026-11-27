@@ -528,3 +528,12 @@ body{margin:0;background:var(--page);color:var(--tx);font:16px/1.5 var(--font);-
   #ktg .kz-group__head b{font-size:16px;line-height:20px}
   #ktg .kz-more{margin:2px 0 0 auto}
 }
+.seo{padding-bottom:16px}
+.seo__text{columns:2 380px;column-gap:56px;padding-top:40px;border-top:1px solid var(--line)}
+.seo h2{column-span:all;margin:0 0 18px;font:700 clamp(22px,2vw,28px)/1.2 var(--head);color:var(--ink)}
+.seo h3{margin:0 0 8px;font:600 16px/1.35 var(--font);color:var(--ink);break-after:avoid}
+.seo p{margin:0 0 22px;font-size:15px;line-height:1.6;color:var(--mut)}
+.hero__help{margin:18px 0 0;font-size:18px;line-height:1.5;font-weight:600;color:#fff}
+@media (min-width:769px){.hero__help{margin-top:14px;font-size:17px;color:var(--ink)}}
+.hero__help+.hero__lead{margin-top:8px}
+@media (max-width:640px){.seo__text{padding-top:28px}.hero__help{font-size:16px}}
